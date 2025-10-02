@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">FitBalance</string>
+    <string name="sign_in">Giriş Yap</string>
+    <string name="mail">E-Mail</string>
+    <string name="name">İsim</string>
+    <string name="surname">Soyisim</string>
+    <string name="boy">Boy (cm)</string>
+    <string name="kilo">Kilo (kg)</string>
+    <string name="yas">Yaş</string>
+    <string name="password">Şifre</string>
+    <string name="sign_up">Kayıt Ol</string>
+    <string name="splash_button">Hadi Başlayalım</string>
+    <string name="title_name">FİT BALANCE</string>
+    <string name="text_button_title">Buraya tıklayarak hemen üye olun.</string>
+    <string name="already_have_account">Zaten hesabın var mı? Giriş Yap</string>
+    <string name="gender_label">Cinsiyet</string>
+    <string name="gender_female">Kadın</string>
+    <string name="gender_male">Erkek</string>
+    <string name="goal_label">Hedef</string>
+    <string name="goal_gain">Kilo Alma</string>
+    <string name="goal_keep">Kilo Koruma</string>
+    <string name="goal_lose">Kilo Verme</string>
+    <string name="explanation">Bu uygulama, sağlıklı kilo alma ve verme yolculuğunda sana rehberlik etmek için tasarlandı. Günlük beslenme planları, takip araçları ve motivasyon ipuçlarıyla hedeflerine daha kolay ulaşabilirsin. Her küçük adım, büyük bir fark yaratır; şimdi kendin için sağlıklı bir başlangıç yapma zamanı!</string>
+</resources>
