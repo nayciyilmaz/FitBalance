@@ -1,21 +1,25 @@
 package com.example.fitbalance.viewmodels
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fitbalance.R
 import com.example.fitbalance.data.SignInUiState
 import com.example.fitbalance.data.SignInValidationErrors
 import com.example.fitbalance.repository.AuthRepository
 import com.example.fitbalance.repository.AuthResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SignInScreenViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     var inputMail by mutableStateOf("")
@@ -79,22 +83,23 @@ class SignInScreenViewModel @Inject constructor(
     private fun validateInputs(): SignInValidationErrors {
         var errors = SignInValidationErrors()
 
+        // Email validation
         if (inputMail.trim().isEmpty()) {
-            errors = errors.copy(emailError = "E-posta boş bırakılamaz")
+            errors = errors.copy(emailError = context.getString(R.string.error_email_empty))
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(inputMail.trim()).matches()) {
-            errors = errors.copy(emailError = "Geçerli bir e-posta adresi girin")
+            errors = errors.copy(emailError = context.getString(R.string.error_email_invalid))
         }
 
+        // Password validation
         if (inputPassword.isEmpty()) {
-            errors = errors.copy(passwordError = "Şifre boş bırakılamaz")
+            errors = errors.copy(passwordError = context.getString(R.string.error_password_empty))
         } else if (inputPassword.length < 6) {
-            errors = errors.copy(passwordError = "Şifre en az 6 karakter olmalı")
+            errors = errors.copy(passwordError = context.getString(R.string.error_password_min_length))
         }
 
         return errors
     }
 }
-
 private fun SignInValidationErrors.hasErrors(): Boolean {
     return emailError != null || passwordError != null
 }

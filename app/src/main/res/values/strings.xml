@@ -7,10 +7,27 @@
     <string name="boy">Boy (cm)</string>
     <string name="kilo">Kilo (kg)</string>
     <string name="yas">Yaş</string>
+    <string name="profil">Profil</string>
+    <string name="düzenle">Düzenle</string>
+    <string name="ekle">Ekle</string>
+    <string name="onayla">Onayla</string>
+    <string name="iptal">İptal</string>
+    <string name="değiştir">Değiştir</string>
+    <string name="yaptım">Yaptım</string>
+    <string name="paylaş">Paylaş</string>
+    <string name="ana_sayfa">Ana Sayfa</string>
+    <string name="detaylar">Detaylar</string>
+    <string name="hedefler">Hedefler</string>
+    <string name="total_kalori">Toplam Kalori : </string>
+    <string name="kalori">Kalori</string>
+    <string name="yiyecek_adi">Yiyecek Adı </string>
+    <string name="bildirimler">Bildirimler</string>
+    <string name="istatistikler">İstatistik</string>
     <string name="password">Şifre</string>
     <string name="sign_up">Kayıt Ol</string>
     <string name="splash_button">Hadi Başlayalım</string>
     <string name="title_name">FİT BALANCE</string>
+    <string name="add_kalori">Ekleyeceğiniz yiyeceğin kalori miktarını öğreniniz.</string>
     <string name="text_button_title">Buraya tıklayarak hemen üye olun.</string>
     <string name="already_have_account">Zaten hesabın var mı? Giriş Yap</string>
     <string name="gender_label">Cinsiyet</string>
@@ -21,4 +38,63 @@
     <string name="goal_keep">Kilo Koruma</string>
     <string name="goal_lose">Kilo Verme</string>
     <string name="explanation">Bu uygulama, sağlıklı kilo alma ve verme yolculuğunda sana rehberlik etmek için tasarlandı. Günlük beslenme planları, takip araçları ve motivasyon ipuçlarıyla hedeflerine daha kolay ulaşabilirsin. Her küçük adım, büyük bir fark yaratır; şimdi kendin için sağlıklı bir başlangıç yapma zamanı!</string>
+
+    <string-array name="home_messages">
+        <item>
+            Ana sayfada öğünlerin var. Öğüne tıklayarak içeriği düzenleyebilir ve yapay zekaya danışabilirsin.
+        </item>
+        <item>
+            Hedef bölümünde aylık kilo değişim grafiğini görerek kilonu rahatlıkla takip edebilirsin.
+        </item>
+        <item>
+            İstatistik bölümünden geçmiş günlerdeki aldığın kalori miktarını ve yediğin öğünlerini görebilirsin.
+        </item>
+        <item>
+            Öğünler dışında yemek yerseniz en yakın öğüne giderek o yiyeceği ve kalorisini ekleyebilirsiniz.
+        </item>
+    </string-array>
+
+    <string-array name="details_messages">
+    <item>
+        Düzenle butonuna tıklayarak öğünü düzenleyebilirsin.
+    </item>
+        <item>
+        Değiştir butonuna tıklayarak yapay zekayla öğün içeriğini değiştirebilirsin.
+    </item>
+        <item>
+        Paylaş butonuna tıklayarak öğününü arkadaşlarınla paylaşabilirsin.
+    </item>
+    </string-array>
+
+
+    <string name="error_name_empty">İsim boş bırakılamaz</string>
+    <string name="error_name_min_length">İsim en az 2 karakter olmalı</string>
+    <string name="error_name_letters_only">İsim sadece harf içermelidir</string>
+
+    <string name="error_surname_empty">Soyisim boş bırakılamaz</string>
+    <string name="error_surname_min_length">Soyisim en az 2 karakter olmalı</string>
+    <string name="error_surname_letters_only">Soyisim sadece harf içermelidir</string>
+
+    <string name="error_email_empty">E-posta boş bırakılamaz</string>
+    <string name="error_email_invalid">Geçerli bir e-posta adresi girin</string>
+
+    <string name="error_password_empty">Şifre boş bırakılamaz</string>
+    <string name="error_password_min_length">Şifre en az 6 karakter olmalı</string>
+    <string name="error_password_needs_digit">Şifre en az bir rakam içermelidir</string>
+    <string name="error_password_needs_letter">Şifre en az bir harf içermelidir</string>
+
+    <string name="error_height_empty">Boy boş bırakılamaz</string>
+    <string name="error_height_invalid">Geçerli bir sayı girin</string>
+    <string name="error_height_range">Boy 50-300 cm arasında olmalı</string>
+
+    <string name="error_weight_empty">Kilo boş bırakılamaz</string>
+    <string name="error_weight_invalid">Geçerli bir sayı girin</string>
+    <string name="error_weight_range">Kilo 20-500 kg arasında olmalı</string>
+
+    <string name="error_age_empty">Yaş boş bırakılamaz</string>
+    <string name="error_age_invalid">Geçerli bir sayı girin</string>
+    <string name="error_age_range">Yaş 10-120 arasında olmalı</string>
+
+    <string name="error_gender_empty">Cinsiyet seçiniz</string>
+    <string name="error_goal_empty">Hedef seçiniz</string>
 </resources>

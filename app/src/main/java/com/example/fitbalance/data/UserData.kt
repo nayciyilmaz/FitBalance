@@ -1,5 +1,7 @@
 package com.example.fitbalance.data
 
+import androidx.compose.ui.graphics.vector.ImageVector
+
 data class UserData(
     val uid: String = "",
     val name: String = "",
@@ -41,4 +43,11 @@ data class SignInUiState(
 data class SignInValidationErrors(
     val emailError: String? = null,
     val passwordError: String? = null
+)
+
+data class BottomNavItem(
+    val route: String,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val label: String
 )

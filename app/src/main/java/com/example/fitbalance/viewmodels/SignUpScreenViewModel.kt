@@ -1,22 +1,26 @@
 package com.example.fitbalance.viewmodels
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fitbalance.R
 import com.example.fitbalance.data.SignUpUiState
 import com.example.fitbalance.data.UserData
 import com.example.fitbalance.data.ValidationErrors
 import com.example.fitbalance.repository.AuthRepository
 import com.example.fitbalance.repository.AuthResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SignUpScreenViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     var inputName by mutableStateOf("")
@@ -144,83 +148,91 @@ class SignUpScreenViewModel @Inject constructor(
     private fun validateInputs(): ValidationErrors {
         var errors = ValidationErrors()
 
+        // Name validation
         if (inputName.trim().isEmpty()) {
-            errors = errors.copy(nameError = "İsim boş bırakılamaz")
+            errors = errors.copy(nameError = context.getString(R.string.error_name_empty))
         } else if (inputName.trim().length < 2) {
-            errors = errors.copy(nameError = "İsim en az 2 karakter olmalı")
+            errors = errors.copy(nameError = context.getString(R.string.error_name_min_length))
         } else if (!inputName.trim().all { it.isLetter() || it.isWhitespace() }) {
-            errors = errors.copy(nameError = "İsim sadece harf içermelidir")
+            errors = errors.copy(nameError = context.getString(R.string.error_name_letters_only))
         }
 
+        // Surname validation
         if (inputSurname.trim().isEmpty()) {
-            errors = errors.copy(surnameError = "Soyisim boş bırakılamaz")
+            errors = errors.copy(surnameError = context.getString(R.string.error_surname_empty))
         } else if (inputSurname.trim().length < 2) {
-            errors = errors.copy(surnameError = "Soyisim en az 2 karakter olmalı")
+            errors = errors.copy(surnameError = context.getString(R.string.error_surname_min_length))
         } else if (!inputSurname.trim().all { it.isLetter() || it.isWhitespace() }) {
-            errors = errors.copy(surnameError = "Soyisim sadece harf içermelidir")
+            errors = errors.copy(surnameError = context.getString(R.string.error_surname_letters_only))
         }
 
+        // Email validation
         if (inputMail.trim().isEmpty()) {
-            errors = errors.copy(emailError = "E-posta boş bırakılamaz")
+            errors = errors.copy(emailError = context.getString(R.string.error_email_empty))
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(inputMail.trim()).matches()) {
-            errors = errors.copy(emailError = "Geçerli bir e-posta adresi girin")
+            errors = errors.copy(emailError = context.getString(R.string.error_email_invalid))
         }
 
+        // Password validation
         if (inputPassword.isEmpty()) {
-            errors = errors.copy(passwordError = "Şifre boş bırakılamaz")
+            errors = errors.copy(passwordError = context.getString(R.string.error_password_empty))
         } else if (inputPassword.length < 6) {
-            errors = errors.copy(passwordError = "Şifre en az 6 karakter olmalı")
+            errors = errors.copy(passwordError = context.getString(R.string.error_password_min_length))
         } else if (!inputPassword.any { it.isDigit() }) {
-            errors = errors.copy(passwordError = "Şifre en az bir rakam içermelidir")
+            errors = errors.copy(passwordError = context.getString(R.string.error_password_needs_digit))
         } else if (!inputPassword.any { it.isLetter() }) {
-            errors = errors.copy(passwordError = "Şifre en az bir harf içermelidir")
+            errors = errors.copy(passwordError = context.getString(R.string.error_password_needs_letter))
         }
 
+        // Height validation
         if (inputHeight.trim().isEmpty()) {
-            errors = errors.copy(heightError = "Boy boş bırakılamaz")
+            errors = errors.copy(heightError = context.getString(R.string.error_height_empty))
         } else {
             val height = inputHeight.toDoubleOrNull()
             if (height == null) {
-                errors = errors.copy(heightError = "Geçerli bir sayı girin")
+                errors = errors.copy(heightError = context.getString(R.string.error_height_invalid))
             } else if (height < 50 || height > 300) {
-                errors = errors.copy(heightError = "Boy 50-300 cm arasında olmalı")
+                errors = errors.copy(heightError = context.getString(R.string.error_height_range))
             }
         }
 
+        // Weight validation
         if (inputWeight.trim().isEmpty()) {
-            errors = errors.copy(weightError = "Kilo boş bırakılamaz")
+            errors = errors.copy(weightError = context.getString(R.string.error_weight_empty))
         } else {
             val weight = inputWeight.toDoubleOrNull()
             if (weight == null) {
-                errors = errors.copy(weightError = "Geçerli bir sayı girin")
+                errors = errors.copy(weightError = context.getString(R.string.error_weight_invalid))
             } else if (weight < 20 || weight > 500) {
-                errors = errors.copy(weightError = "Kilo 20-500 kg arasında olmalı")
+                errors = errors.copy(weightError = context.getString(R.string.error_weight_range))
             }
         }
 
+        // Age validation
         if (inputAge.trim().isEmpty()) {
-            errors = errors.copy(ageError = "Yaş boş bırakılamaz")
+            errors = errors.copy(ageError = context.getString(R.string.error_age_empty))
         } else {
             val age = inputAge.toIntOrNull()
             if (age == null) {
-                errors = errors.copy(ageError = "Geçerli bir sayı girin")
+                errors = errors.copy(ageError = context.getString(R.string.error_age_invalid))
             } else if (age < 10 || age > 120) {
-                errors = errors.copy(ageError = "Yaş 10-120 arasında olmalı")
+                errors = errors.copy(ageError = context.getString(R.string.error_age_range))
             }
         }
 
+        // Gender validation
         if (inputGender.isEmpty()) {
-            errors = errors.copy(genderError = "Cinsiyet seçiniz")
+            errors = errors.copy(genderError = context.getString(R.string.error_gender_empty))
         }
 
+        // Goal validation
         if (inputGoal.isEmpty()) {
-            errors = errors.copy(goalError = "Hedef seçiniz")
+            errors = errors.copy(goalError = context.getString(R.string.error_goal_empty))
         }
 
         return errors
     }
 }
-
 private fun ValidationErrors.hasErrors(): Boolean {
     return nameError != null || surnameError != null || emailError != null ||
             passwordError != null || heightError != null || weightError != null ||
