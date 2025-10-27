@@ -25,13 +25,7 @@ fun EditScaffold(
                 EditBottomAppBar(
                     navController = navController,
                     onFabClick = {
-                        navController.navigate(FitBalanceScreens.NotificationScreen.route) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+                        navController.navigate(FitBalanceScreens.NotificationScreen.route)
                     }
                 )
             }

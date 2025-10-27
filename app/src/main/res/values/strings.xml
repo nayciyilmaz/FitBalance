@@ -7,6 +7,11 @@
     <string name="boy">Boy (cm)</string>
     <string name="kilo">Kilo (kg)</string>
     <string name="yas">Yaş</string>
+    <string name="hata">Hata</string>
+    <string name="tamam">Tamam</string>
+    <string name="kahvalti">Kahvaltı</string>
+    <string name="ögle_yemegi">Öğle Yemeği</string>
+    <string name="aksam_yemegi">Akşam Yemeği</string>
     <string name="profil">Profil</string>
     <string name="düzenle">Düzenle</string>
     <string name="ekle">Ekle</string>
@@ -14,6 +19,8 @@
     <string name="iptal">İptal</string>
     <string name="değiştir">Değiştir</string>
     <string name="yaptım">Yaptım</string>
+    <string name="yapmadım">Yapmadım</string>
+    <string name="geri">Geri Gel</string>
     <string name="paylaş">Paylaş</string>
     <string name="ana_sayfa">Ana Sayfa</string>
     <string name="detaylar">Detaylar</string>
@@ -27,6 +34,10 @@
     <string name="sign_up">Kayıt Ol</string>
     <string name="splash_button">Hadi Başlayalım</string>
     <string name="title_name">FİT BALANCE</string>
+    <string name="ögün_plan">Öğün Planı Oluştur</string>
+    <string name="yapayzeka_ögün_plan">Yapay Zeka öğünleri oluşturuyor</string>
+    <string name="ögünlerim">ÖĞÜNLERİM</string>
+    <string name="tüm_ögün">Bugünün tüm öğünlerini tamamladınız!</string>
     <string name="add_kalori">Ekleyeceğiniz yiyeceğin kalori miktarını öğreniniz.</string>
     <string name="text_button_title">Buraya tıklayarak hemen üye olun.</string>
     <string name="already_have_account">Zaten hesabın var mı? Giriş Yap</string>
@@ -55,17 +66,16 @@
     </string-array>
 
     <string-array name="details_messages">
-    <item>
-        Düzenle butonuna tıklayarak öğünü düzenleyebilirsin.
-    </item>
         <item>
-        Değiştir butonuna tıklayarak yapay zekayla öğün içeriğini değiştirebilirsin.
-    </item>
+            Düzenle butonuna tıklayarak öğünü düzenleyebilirsin.
+        </item>
         <item>
-        Paylaş butonuna tıklayarak öğününü arkadaşlarınla paylaşabilirsin.
-    </item>
+            Değiştir butonuna tıklayarak yapay zekayla öğün içeriğini değiştirebilirsin.
+        </item>
+        <item>
+            Paylaş butonuna tıklayarak öğününü arkadaşlarınla paylaşabilirsin.
+        </item>
     </string-array>
-
 
     <string name="error_name_empty">İsim boş bırakılamaz</string>
     <string name="error_name_min_length">İsim en az 2 karakter olmalı</string>
@@ -97,4 +107,20 @@
 
     <string name="error_gender_empty">Cinsiyet seçiniz</string>
     <string name="error_goal_empty">Hedef seçiniz</string>
+
+    <string name="error_user_id_not_found">Kullanıcı ID\'si alınamadı</string>
+    <string name="error_email_already_in_use">Bu e-posta adresi zaten kullanımda</string>
+    <string name="error_email_invalid_firebase">Geçersiz e-posta adresi</string>
+    <string name="error_weak_password">Şifre çok zayıf (en az 6 karakter olmalı)</string>
+    <string name="error_network_request_failed">İnternet bağlantısı hatası</string>
+    <string name="error_user_disabled">Bu hesap devre dışı bırakılmış</string>
+    <string name="error_too_many_requests">Çok fazla deneme yapıldı. Lütfen daha sonra tekrar deneyin</string>
+    <string name="error_operation_not_allowed">Bu işlem şu anda kullanılamıyor</string>
+    <string name="error_signup_failed">Kayıt işlemi başarısız: %1$s</string>
+    <string name="error_wrong_password">Hatalı şifre</string>
+    <string name="error_user_not_found">Bu e-posta ile kayıtlı kullanıcı bulunamadı</string>
+    <string name="error_too_many_failed_attempts">Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin</string>
+    <string name="error_invalid_credential">E-posta veya şifre hatalı</string>
+    <string name="error_signin_failed">Giriş başarısız: %1$s</string>
+    <string name="error_unexpected">Beklenmeyen bir hata oluştu: %1$s</string>
 </resources>

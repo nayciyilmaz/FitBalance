@@ -1,9 +1,12 @@
 package com.example.fitbalance.repository
 
+import android.content.Context
+import com.example.fitbalance.R
 import com.example.fitbalance.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,7 +14,8 @@ import javax.inject.Singleton
 @Singleton
 class AuthRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    @ApplicationContext private val context: Context
 ) {
     suspend fun signUp(
         email: String,
@@ -20,7 +24,8 @@ class AuthRepository @Inject constructor(
     ): AuthResult {
         return try {
             val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-            val userId = authResult.user?.uid ?: return AuthResult.Error("Kullanıcı ID'si alınamadı")
+            val userId = authResult.user?.uid
+                ?: return AuthResult.Error(context.getString(R.string.error_user_id_not_found))
 
             val userDataWithUid = userData.copy(uid = userId)
             firestore.collection("users")
@@ -31,18 +36,26 @@ class AuthRepository @Inject constructor(
             AuthResult.Success
         } catch (e: FirebaseAuthException) {
             val errorMessage = when (e.errorCode) {
-                "ERROR_EMAIL_ALREADY_IN_USE" -> "Bu e-posta adresi zaten kullanımda"
-                "ERROR_INVALID_EMAIL" -> "Geçersiz e-posta adresi"
-                "ERROR_WEAK_PASSWORD" -> "Şifre çok zayıf (en az 6 karakter olmalı)"
-                "ERROR_NETWORK_REQUEST_FAILED" -> "İnternet bağlantısı hatası"
-                "ERROR_USER_DISABLED" -> "Bu hesap devre dışı bırakılmış"
-                "ERROR_TOO_MANY_REQUESTS" -> "Çok fazla deneme yapıldı. Lütfen daha sonra tekrar deneyin"
-                "ERROR_OPERATION_NOT_ALLOWED" -> "Bu işlem şu anda kullanılamıyor"
-                else -> "Kayıt işlemi başarısız: ${e.message}"
+                "ERROR_EMAIL_ALREADY_IN_USE" ->
+                    context.getString(R.string.error_email_already_in_use)
+                "ERROR_INVALID_EMAIL" ->
+                    context.getString(R.string.error_email_invalid_firebase)
+                "ERROR_WEAK_PASSWORD" ->
+                    context.getString(R.string.error_weak_password)
+                "ERROR_NETWORK_REQUEST_FAILED" ->
+                    context.getString(R.string.error_network_request_failed)
+                "ERROR_USER_DISABLED" ->
+                    context.getString(R.string.error_user_disabled)
+                "ERROR_TOO_MANY_REQUESTS" ->
+                    context.getString(R.string.error_too_many_requests)
+                "ERROR_OPERATION_NOT_ALLOWED" ->
+                    context.getString(R.string.error_operation_not_allowed)
+                else ->
+                    context.getString(R.string.error_signup_failed, e.message)
             }
             AuthResult.Error(errorMessage)
         } catch (e: Exception) {
-            AuthResult.Error("Beklenmeyen bir hata oluştu: ${e.message}")
+            AuthResult.Error(context.getString(R.string.error_unexpected, e.message))
         }
     }
 
@@ -55,18 +68,26 @@ class AuthRepository @Inject constructor(
             AuthResult.Success
         } catch (e: FirebaseAuthException) {
             val errorMessage = when (e.errorCode) {
-                "ERROR_INVALID_EMAIL" -> "Geçersiz e-posta adresi"
-                "ERROR_WRONG_PASSWORD" -> "Hatalı şifre"
-                "ERROR_USER_NOT_FOUND" -> "Bu e-posta ile kayıtlı kullanıcı bulunamadı"
-                "ERROR_USER_DISABLED" -> "Bu hesap devre dışı bırakılmış"
-                "ERROR_TOO_MANY_REQUESTS" -> "Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin"
-                "ERROR_NETWORK_REQUEST_FAILED" -> "İnternet bağlantısı hatası"
-                "ERROR_INVALID_CREDENTIAL" -> "E-posta veya şifre hatalı"
-                else -> "Giriş başarısız: ${e.message}"
+                "ERROR_INVALID_EMAIL" ->
+                    context.getString(R.string.error_email_invalid_firebase)
+                "ERROR_WRONG_PASSWORD" ->
+                    context.getString(R.string.error_wrong_password)
+                "ERROR_USER_NOT_FOUND" ->
+                    context.getString(R.string.error_user_not_found)
+                "ERROR_USER_DISABLED" ->
+                    context.getString(R.string.error_user_disabled)
+                "ERROR_TOO_MANY_REQUESTS" ->
+                    context.getString(R.string.error_too_many_failed_attempts)
+                "ERROR_NETWORK_REQUEST_FAILED" ->
+                    context.getString(R.string.error_network_request_failed)
+                "ERROR_INVALID_CREDENTIAL" ->
+                    context.getString(R.string.error_invalid_credential)
+                else ->
+                    context.getString(R.string.error_signin_failed, e.message)
             }
             AuthResult.Error(errorMessage)
         } catch (e: Exception) {
-            AuthResult.Error("Beklenmeyen bir hata oluştu: ${e.message}")
+            AuthResult.Error(context.getString(R.string.error_unexpected, e.message))
         }
     }
 }

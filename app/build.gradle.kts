@@ -69,16 +69,20 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
 
     //DI
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
-    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("com.google.dagger:hilt-android:2.57.2")
+    kapt("com.google.dagger:hilt-android-compiler:2.57.2")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.3.0")
 
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+
+    // Gemini AI
+    implementation("com.google.ai.client.generativeai:generativeai:latest.release")
 }
 
 kapt {
     correctErrorTypes = true
+    useBuildCache = true
 }

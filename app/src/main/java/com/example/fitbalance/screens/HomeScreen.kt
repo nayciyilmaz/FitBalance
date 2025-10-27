@@ -4,15 +4,17 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -30,8 +32,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fitbalance.R
-import com.example.fitbalance.components.EditHorizontalPager
 import com.example.fitbalance.components.EditScaffold
+import com.example.fitbalance.components.InfoCard
 import com.example.fitbalance.components.MealCard
 import com.example.fitbalance.navigation.FitBalanceScreens
 import com.example.fitbalance.viewmodels.HomeScreenViewModel
@@ -47,16 +49,6 @@ fun HomeScreen(
     val context = LocalContext.current
     val messages = context.resources.getStringArray(R.array.home_messages)
     val pagerState = rememberPagerState(pageCount = { messages.size })
-
-    val breakfast = listOf("Yulaf ezmesi" to 150, "Süt" to 60, "Muz" to 89, "Yumurta" to 78)
-    val lunch = listOf("Tavuk göğsü" to 165, "Pirinç pilavı" to 130, "Yoğurt" to 59, "Salata" to 25)
-    val dinner = listOf("Balık" to 206, "Haşlanmış sebze" to 35, "Tam buğday ekmeği" to 69, "Ayran" to 38)
-
-    val meals = listOf(
-        "KAHVALTI" to breakfast,
-        "ÖĞLE YEMEĞİ" to lunch,
-        "AKŞAM YEMEĞİ" to dinner
-    )
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -75,42 +67,65 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
+                .padding(20.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(20.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                HomeScreenInfoCard(
-                    messages = messages,
-                    pagerState = pagerState
-                )
-
+            InfoCard(
+                messages = messages,
+                pagerState = pagerState,
+                modifier = modifier.fillMaxWidth()
+            )
+            key(viewModel.refreshTrigger) {
                 HomeScreenDateCard(
                     currentDate = viewModel.currentDate,
                     caloriesBurned = viewModel.caloriesBurned
                 )
+            }
 
-                Text(
-                    text = "ÖĞÜNLERİM",
+            Text(
+                text = stringResource(R.string.ögünlerim),
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp, bottom = 12.dp),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                textAlign = TextAlign.Start
+            )
+
+            if (viewModel.isLoading) {
+                Row(
                     modifier = modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 8.dp),
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    textAlign = TextAlign.Start
-                )
-
-                meals.forEachIndexed { index, meal ->
-                    MealCard(
-                        title = meal.first,
-                        items = meal.second,
-                        showCalories = false,
-                        onClick = {
-                            navController.navigate("${FitBalanceScreens.DetailsScreen.route}/$index")
+                        .padding(vertical = 16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CircularProgressIndicator(
+                        modifier = modifier.size(40.dp),
+                        color = colorResource(R.color.green)
+                    )
+                    Text(
+                        text = stringResource(R.string.yapayzeka_ögün_plan),
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Medium
+                        ),
+                        modifier = modifier.padding(start = 16.dp)
+                    )
+                }
+            } else {
+                key(viewModel.refreshTrigger) {
+                    HomeScreenMealSection(
+                        viewModel = viewModel,
+                        onBreakfastClick = {
+                            navController.navigate("${FitBalanceScreens.DetailsScreen.route}/0")
+                        },
+                        onLunchClick = {
+                            navController.navigate("${FitBalanceScreens.DetailsScreen.route}/1")
+                        },
+                        onDinnerClick = {
+                            navController.navigate("${FitBalanceScreens.DetailsScreen.route}/2")
                         }
                     )
                 }
@@ -120,22 +135,65 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeScreenInfoCard(
-    messages: Array<String>,
-    pagerState: PagerState,
-    modifier: Modifier = Modifier
+fun HomeScreenMealSection(
+    viewModel: HomeScreenViewModel,
+    onBreakfastClick: () -> Unit,
+    onLunchClick: () -> Unit,
+    onDinnerClick: () -> Unit
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.blue)
-        )
-    ) {
-        EditHorizontalPager(
-            messages = messages,
-            pagerState = pagerState
-        )
+    Column {
+        if (viewModel.hasAnyVisibleMeal) {
+            viewModel.visibleBreakfast?.let { breakfast ->
+                MealCard(
+                    title = stringResource(R.string.kahvalti),
+                    items = breakfast.items.map { it.name to it.calories },
+                    showCalories = false,
+                    onClick = onBreakfastClick
+                )
+            }
+
+            viewModel.visibleLunch?.let { lunch ->
+                MealCard(
+                    title = stringResource(R.string.ögle_yemegi),
+                    items = lunch.items.map { it.name to it.calories },
+                    showCalories = false,
+                    onClick = onLunchClick
+                )
+            }
+
+            viewModel.visibleDinner?.let { dinner ->
+                MealCard(
+                    title = stringResource(R.string.aksam_yemegi),
+                    items = dinner.items.map { it.name to it.calories },
+                    showCalories = false,
+                    onClick = onDinnerClick
+                )
+            }
+        } else if (viewModel.shouldShowAllMealsCompleted) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = colorResource(R.color.green)
+                )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(R.string.tüm_ögün),
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            color = Color.White
+                        ),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -167,7 +225,7 @@ fun HomeScreenDateCard(
                 )
             )
             Text(
-                text = "Gün içerisinde alınan kalori = $caloriesBurned",
+                text = "Gün içerisinde alınan kalori = $caloriesBurned kcal",
                 style = MaterialTheme.typography.bodyLarge.copy(
                     color = Color.White
                 ),

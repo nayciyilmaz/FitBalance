@@ -35,7 +35,6 @@ fun EditBottomAppBar(
     modifier: Modifier = Modifier,
     onFabClick: () -> Unit
 ) {
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -74,7 +73,8 @@ fun EditBottomAppBar(
 
     NavigationBar(
         modifier = modifier,
-        containerColor = colorResource(id = R.color.green)
+        containerColor = Color.White,
+        contentColor = colorResource(id = R.color.green)
     ) {
         items.forEachIndexed { index, item ->
             if (index == 2) {
@@ -84,7 +84,8 @@ fun EditBottomAppBar(
                     icon = {
                         FloatingActionButton(
                             onClick = onFabClick,
-                            containerColor = colorResource(id = R.color.dark_green)
+                            containerColor = colorResource(id = R.color.green),
+                            contentColor = Color.White
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Notifications,
@@ -95,7 +96,7 @@ fun EditBottomAppBar(
                     },
                     label = null,
                     colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = colorResource(id = R.color.green)
+                        indicatorColor = Color.Transparent
                     )
                 )
             } else {
@@ -104,27 +105,36 @@ fun EditBottomAppBar(
                     onClick = {
                         if (currentRoute != item.route) {
                             navController.navigate(item.route) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true // sekme değişince durumu kaydetmek için
+                                popUpTo(FitBalanceScreens.NotificationScreen.route) {
+                                    saveState = true
                                 }
-                                launchSingleTop = true // aynı ekranın aynı anda birden fazla kopyasının üst üste gelmesini engelle
-                                restoreState = true // eğer kaydedilmiş durum varsa geri yükle
+                                launchSingleTop = true
+                                restoreState = true
                             }
                         }
                     },
                     icon = {
                         Icon(
                             imageVector = if (currentRoute == item.route) item.selectedIcon else item.unselectedIcon,
-                            contentDescription = item.label
+                            contentDescription = null
                         )
                     },
-                    label = { Text(text = item.label) },
+                    label = {
+                        Text(
+                            text = item.label,
+                            color = if (currentRoute == item.route) {
+                                colorResource(id = R.color.green)
+                            } else {
+                                Color.Gray
+                            }
+                        )
+                    },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color.White,
-                        unselectedIconColor = Color.White,
-                        selectedTextColor = Color.White,
-                        unselectedTextColor = Color.White,
-                        indicatorColor = colorResource(id = R.color.light_green)
+                        selectedIconColor = colorResource(id = R.color.green),
+                        unselectedIconColor = Color.Gray,
+                        selectedTextColor = colorResource(id = R.color.green),
+                        unselectedTextColor = Color.Gray,
+                        indicatorColor = colorResource(id = R.color.light_green).copy(alpha = 0.2f)
                     )
                 )
             }

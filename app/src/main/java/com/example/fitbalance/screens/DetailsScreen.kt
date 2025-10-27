@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -37,40 +36,56 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fitbalance.R
 import com.example.fitbalance.components.DetailsScreenEditableMealCard
-import com.example.fitbalance.components.EditHorizontalPager
 import com.example.fitbalance.components.EditScaffold
+import com.example.fitbalance.components.InfoCard
 import com.example.fitbalance.components.MealCard
-import com.example.fitbalance.navigation.FitBalanceScreens
 import com.example.fitbalance.viewmodels.DetailsScreenViewModel
+import com.example.fitbalance.viewmodels.HomeScreenViewModel
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun DetailsScreen(
     navController: NavController,
     mealIndex: Int,
     modifier: Modifier = Modifier,
-    viewModel: DetailsScreenViewModel = hiltViewModel()
+    viewModel: DetailsScreenViewModel = hiltViewModel(),
+    homeViewModel: HomeScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val messages = context.resources.getStringArray(R.array.details_messages)
     val pagerState = rememberPagerState(pageCount = { messages.size })
+    val scope = rememberCoroutineScope()
 
-    val breakfast = listOf("Yulaf ezmesi" to 150, "Süt" to 60, "Muz" to 89, "Yumurta" to 78)
-    val lunch = listOf("Tavuk göğsü" to 165, "Pirinç pilavı" to 130, "Yoğurt" to 59, "Salata" to 25)
-    val dinner = listOf("Balık" to 206, "Haşlanmış sebze" to 35, "Tam buğday ekmeği" to 69, "Ayran" to 38)
+    val (mealTitle, currentMeal, mealType) = when (mealIndex) {
+        0 -> Triple(
+            stringResource(R.string.kahvalti),
+            homeViewModel.breakfast,
+            "breakfast"
+        )
+        1 -> Triple(
+            stringResource(R.string.ögle_yemegi),
+            homeViewModel.lunch,
+            "lunch"
+        )
+        2 -> Triple(
+            stringResource(R.string.aksam_yemegi),
+            homeViewModel.dinner,
+            "dinner"
+        )
+        else -> Triple("", null, "")
+    }
 
-    val meals = listOf(
-        "KAHVALTI" to breakfast,
-        "ÖĞLE YEMEĞİ" to lunch,
-        "AKŞAM YEMEĞİ" to dinner
-    )
-
-    val selectedMeal = meals[mealIndex]
+    val mealItems = currentMeal?.items?.map { it.name to it.calories } ?: emptyList()
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -94,26 +109,32 @@ fun DetailsScreen(
                 modifier = modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(20.dp),
+                    .padding(20.dp)
+                    .padding(bottom = 80.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DetailsScreenInfoCard(
+                InfoCard(
                     messages = messages,
-                    pagerState = pagerState
+                    pagerState = pagerState,
+                    modifier = modifier.fillMaxWidth()
                 )
 
                 if (!viewModel.isEditing) {
                     DetailsScreenActionButtons(
                         onEditClick = {
-                            viewModel.startEditing(selectedMeal.second)
+                            viewModel.startEditing(
+                                mealItems,
+                                homeViewModel.currentMealPlanId,
+                                mealType
+                            )
                         }
                     )
                 }
 
                 if (viewModel.isEditing) {
                     DetailsScreenEditableMealCard(
-                        title = selectedMeal.first,
+                        title = mealTitle,
                         items = viewModel.editableMealItems,
                         totalCalories = viewModel.getTotalCalories(),
                         onItemNameChange = { index, name ->
@@ -129,7 +150,9 @@ fun DetailsScreen(
                             viewModel.addNewItem()
                         },
                         onConfirm = {
-                            viewModel.confirmEditing()
+                            viewModel.confirmEditing { updatedMeal ->
+                                homeViewModel.updateMeal(mealType, updatedMeal)
+                            }
                         },
                         onCancel = {
                             viewModel.cancelEditing()
@@ -137,41 +160,93 @@ fun DetailsScreen(
                     )
                 } else {
                     MealCard(
-                        title = selectedMeal.first,
-                        items = selectedMeal.second,
+                        title = mealTitle,
+                        items = mealItems,
                         showCalories = true
                     )
                 }
             }
 
             if (!viewModel.isEditing) {
-                Button(
-                    onClick = {
-                        navController.navigate(FitBalanceScreens.HomeScreen.route) {
-                            popUpTo(FitBalanceScreens.HomeScreen.route) {
-                                inclusive = true
-                            }
-                        }
-                    },
+                Column(
                     modifier = modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
-                        .padding(20.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(R.color.green),
-                        contentColor = Color.White
-                    )
+                        .padding(16.dp)
                 ) {
-                    Text(
-                        text = stringResource(R.string.yaptım),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        modifier = modifier.padding(vertical = 8.dp)
-                    )
+                    Row(
+                        modifier = modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        DetailsScreenBottomButton(
+                            text = stringResource(R.string.yaptım),
+                            onClick = {
+                                scope.launch {
+                                    homeViewModel.markMealStatusSync(mealType, true)
+                                    delay(100)
+                                    homeViewModel.forceRefresh()
+                                    delay(100)
+                                    withContext(Dispatchers.Main) {
+                                        navController.popBackStack()
+                                    }
+                                }
+                            },
+                            modifier = modifier.weight(1f)
+                        )
+
+                        DetailsScreenBottomButton(
+                            text = stringResource(R.string.yapmadım),
+                            onClick = {
+                                scope.launch {
+                                    homeViewModel.markMealStatusSync(mealType, false)
+                                    delay(100)
+                                    homeViewModel.forceRefresh()
+                                    delay(100)
+                                    withContext(Dispatchers.Main) {
+                                        navController.popBackStack()
+                                    }
+                                }
+                            },
+                            modifier = modifier.weight(1f)
+                        )
+
+                        DetailsScreenBottomButton(
+                            text = stringResource(R.string.geri),
+                            onClick = {
+                                navController.popBackStack()
+                            },
+                            modifier = modifier.weight(1f)
+                        )
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun DetailsScreenBottomButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colorResource(R.color.green),
+            contentColor = Color.White
+        )
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 12.sp
+            ),
+            textAlign = TextAlign.Center,
+            modifier = modifier.padding(top = 4.dp, bottom = 4.dp)
+        )
     }
 }
 
@@ -247,29 +322,9 @@ fun ActionButtonItem(
     }
 }
 
-@Composable
-fun DetailsScreenInfoCard(
-    modifier: Modifier = Modifier,
-    messages: Array<String>,
-    pagerState: PagerState
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.blue)
-        )
-    ) {
-        EditHorizontalPager(
-            messages = messages,
-            pagerState = pagerState
-        )
-    }
-}
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun DetailsScreenPreview() {
     val navController = rememberNavController()
-    DetailsScreen(navController = navController,mealIndex = 0)
+    DetailsScreen(navController = navController, mealIndex = 0)
 }

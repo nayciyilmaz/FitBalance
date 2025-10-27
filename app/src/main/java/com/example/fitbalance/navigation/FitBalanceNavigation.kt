@@ -15,12 +15,20 @@ import com.example.fitbalance.screens.SignInScreen
 import com.example.fitbalance.screens.SignUpScreen
 import com.example.fitbalance.screens.SplashScreen
 import com.example.fitbalance.screens.StatisticScreen
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun FitBalanceNavigation() {
     val navController = rememberNavController()
+    val currentUser = FirebaseAuth.getInstance().currentUser
 
-    NavHost(navController = navController, startDestination = FitBalanceScreens.HomeScreen.route){
+    val startDestination = if (currentUser != null) {
+        FitBalanceScreens.HomeScreen.route
+    } else {
+        FitBalanceScreens.SplashScreen.route
+    }
+
+    NavHost(navController = navController, startDestination = startDestination){
         composable(route = FitBalanceScreens.SplashScreen.route){
             SplashScreen(navController = navController)
         }
