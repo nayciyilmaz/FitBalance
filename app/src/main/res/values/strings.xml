@@ -29,18 +29,31 @@
     <string name="kalori">Kalori</string>
     <string name="yiyecek_adi">Yiyecek Adı </string>
     <string name="bildirimler">Bildirimler</string>
+    <string name="ayarlar">Ayarlar</string>
     <string name="istatistikler">İstatistik</string>
+    <string name="person_details">Kişisel Bilgiler</string>
+    <string name="update_details">Bilgileri Güncelle</string>
     <string name="password">Şifre</string>
     <string name="sign_up">Kayıt Ol</string>
+    <string name="log_out">Çıkış Yap</string>
     <string name="splash_button">Hadi Başlayalım</string>
     <string name="title_name">FİT BALANCE</string>
     <string name="ögün_plan">Öğün Planı Oluştur</string>
     <string name="yapayzeka_ögün_plan">Yapay Zeka öğünleri oluşturuyor</string>
+    <string name="yapayzeka_ögünplan">Yapay Zeka öğünü değiştiriyor</string>
     <string name="ögünlerim">ÖĞÜNLERİM</string>
     <string name="tüm_ögün">Bugünün tüm öğünlerini tamamladınız!</string>
     <string name="add_kalori">Ekleyeceğiniz yiyeceğin kalori miktarını öğreniniz.</string>
     <string name="text_button_title">Buraya tıklayarak hemen üye olun.</string>
     <string name="already_have_account">Zaten hesabın var mı? Giriş Yap</string>
+    <string name="personal_info">Kişisel Bilgiler</string>
+    <string name="physical_info">Fiziksel Özellikler</string>
+    <string name="account_info">Hesap Bilgileri</string>
+    <string name="change_password">Şifre Değiştir</string>
+    <string name="current_password">Mevcut Şifre</string>
+    <string name="new_password">Yeni Şifre</string>
+    <string name="new_password_confirm">Yeni Şifre (Tekrar)</string>
+    <string name="save_changes">Değişiklikleri Kaydet</string>
     <string name="gender_label">Cinsiyet</string>
     <string name="gender_female">Kadın</string>
     <string name="gender_male">Erkek</string>
@@ -59,9 +72,6 @@
         </item>
         <item>
             İstatistik bölümünden geçmiş günlerdeki aldığın kalori miktarını ve yediğin öğünlerini görebilirsin.
-        </item>
-        <item>
-            Öğünler dışında yemek yerseniz en yakın öğüne giderek o yiyeceği ve kalorisini ekleyebilirsiniz.
         </item>
     </string-array>
 

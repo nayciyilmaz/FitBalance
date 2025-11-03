@@ -11,6 +11,7 @@ import com.example.fitbalance.screens.GoalScreen
 import com.example.fitbalance.screens.HomeScreen
 import com.example.fitbalance.screens.NotificationScreen
 import com.example.fitbalance.screens.ProfileScreen
+import com.example.fitbalance.screens.SettingsScreen
 import com.example.fitbalance.screens.SignInScreen
 import com.example.fitbalance.screens.SignUpScreen
 import com.example.fitbalance.screens.SplashScreen
@@ -59,6 +60,9 @@ fun FitBalanceNavigation() {
         }
         composable(route = FitBalanceScreens.ProfileScreen.route){
             ProfileScreen(navController = navController)
+        }
+        composable(route = FitBalanceScreens.SettingsScreen.route){
+            SettingsScreen(navController = navController)
         }
     }
 }

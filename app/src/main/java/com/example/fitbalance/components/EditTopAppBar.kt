@@ -18,7 +18,7 @@ fun EditTopAppBar(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 42.dp, start = 42.dp, end = 42.dp),
+            .padding(top = 52.dp, start = 40.dp, end = 40.dp),
         shadowElevation = 12.dp,
         color = colorResource(R.color.surface_color)
     ) {

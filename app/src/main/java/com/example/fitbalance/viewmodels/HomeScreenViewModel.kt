@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fitbalance.data.Meal
 import com.example.fitbalance.data.MealGenerationRequest
 import com.example.fitbalance.data.MealPlan
+import com.example.fitbalance.data.UserData
 import com.example.fitbalance.repository.GeminiMealResult
 import com.example.fitbalance.repository.GeminiRepository
 import com.example.fitbalance.repository.MealRepository
@@ -88,7 +89,7 @@ class HomeScreenViewModel @Inject constructor(
         currentDate = today.format(formatter)
     }
 
-    private fun loadTodayMealPlan() {
+    fun loadTodayMealPlan() {
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
@@ -113,7 +114,6 @@ class HomeScreenViewModel @Inject constructor(
             }
         }
     }
-
     fun generateNewMealPlan() {
         viewModelScope.launch {
             isLoading = true
@@ -128,7 +128,7 @@ class HomeScreenViewModel @Inject constructor(
 
             try {
                 val userDoc = firestore.collection("users").document(userId).get().await()
-                val userData = userDoc.data
+                val userData = userDoc.toObject(UserData::class.java)
 
                 if (userData == null) {
                     errorMessage = "Kullanıcı verileri bulunamadı"
@@ -139,11 +139,11 @@ class HomeScreenViewModel @Inject constructor(
                 val previousMeals = mealRepository.getPreviousMeals(30)
 
                 val request = MealGenerationRequest(
-                    height = userData["height"] as? Double ?: 170.0,
-                    weight = userData["weight"] as? Double ?: 70.0,
-                    age = (userData["age"] as? Long)?.toInt() ?: 25,
-                    gender = userData["gender"] as? String ?: "Erkek",
-                    goal = userData["goal"] as? String ?: "Kilonu Koru",
+                    height = userData.height,
+                    weight = userData.currentWeight,
+                    age = userData.age,
+                    gender = userData.gender,
+                    goal = userData.goal,
                     previousMeals = previousMeals
                 )
 
@@ -193,7 +193,6 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     suspend fun markMealStatusSync(mealType: String, isCompleted: Boolean) {
-
         val result = mealRepository.markMealAsCompleted(currentMealPlanId, mealType, isCompleted)
 
         when (result) {
@@ -210,35 +209,6 @@ class HomeScreenViewModel @Inject constructor(
 
             is MealResult.Error -> {
                 errorMessage = result.message
-            }
-        }
-    }
-
-    fun forceRefresh() {
-        viewModelScope.launch {
-            delay(200)
-
-            when (val result = mealRepository.getTodayMealPlan()) {
-                is MealResult.Success -> {
-                    result.mealPlan?.let { plan ->
-                        currentMealPlanId = plan.id
-                        breakfast = null
-                        lunch = null
-                        dinner = null
-
-                        delay(50)
-
-                        breakfast = plan.breakfast
-                        lunch = plan.lunch
-                        dinner = plan.dinner
-
-                        calculateTotalCalories()
-                        refreshTrigger++
-                    }
-                }
-
-                is MealResult.Error -> {
-                }
             }
         }
     }

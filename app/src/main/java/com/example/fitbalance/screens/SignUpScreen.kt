@@ -24,7 +24,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -134,7 +133,7 @@ fun SignUpScreen(
                     onValueChange = viewModel::updatePassword,
                     label = stringResource(R.string.password),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    visualTransformation = PasswordVisualTransformation(),
+                    isPassword = true,
                     isError = uiState.validationErrors.passwordError != null
                 )
                 uiState.validationErrors.passwordError?.let {

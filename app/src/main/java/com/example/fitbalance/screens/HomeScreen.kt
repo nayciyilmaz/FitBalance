@@ -4,17 +4,14 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -34,6 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fitbalance.R
 import com.example.fitbalance.components.EditScaffold
 import com.example.fitbalance.components.InfoCard
+import com.example.fitbalance.components.LoadingIndicator
 import com.example.fitbalance.components.MealCard
 import com.example.fitbalance.navigation.FitBalanceScreens
 import com.example.fitbalance.viewmodels.HomeScreenViewModel
@@ -49,6 +47,10 @@ fun HomeScreen(
     val context = LocalContext.current
     val messages = context.resources.getStringArray(R.array.home_messages)
     val pagerState = rememberPagerState(pageCount = { messages.size })
+
+    LaunchedEffect(Unit) {
+        viewModel.loadTodayMealPlan()
+    }
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -87,7 +89,7 @@ fun HomeScreen(
                 text = stringResource(R.string.ögünlerim),
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(top = 12.dp, bottom = 12.dp),
+                    .padding(vertical = 12.dp),
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -95,25 +97,9 @@ fun HomeScreen(
             )
 
             if (viewModel.isLoading) {
-                Row(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    CircularProgressIndicator(
-                        modifier = modifier.size(40.dp),
-                        color = colorResource(R.color.green)
-                    )
-                    Text(
-                        text = stringResource(R.string.yapayzeka_ögün_plan),
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.Medium
-                        ),
-                        modifier = modifier.padding(start = 16.dp)
-                    )
-                }
+                LoadingIndicator(
+                    text = stringResource(R.string.yapayzeka_ögün_plan)
+                )
             } else {
                 key(viewModel.refreshTrigger) {
                     HomeScreenMealSection(
@@ -206,7 +192,7 @@ fun HomeScreenDateCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 12.dp, bottom = 18.dp),
+            .padding(vertical = 16.dp),
         colors = CardDefaults.cardColors(
             containerColor = colorResource(R.color.blue)
         )

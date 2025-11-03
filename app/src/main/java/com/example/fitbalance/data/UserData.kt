@@ -9,11 +9,24 @@ data class UserData(
     val surname: String = "",
     val email: String = "",
     val height: Double = 0.0,
-    val weight: Double = 0.0,
+    val weightHistory: List<WeightEntry> = emptyList(),
     val age: Int = 0,
     val gender: String = "",
     val goal: String = ""
-)
+) {
+    val currentWeight: Double
+        get() = weightHistory.lastOrNull()?.weight ?: 0.0
+}
+
+data class WeightEntry(
+    @get:PropertyName("weight") @set:PropertyName("weight")
+    var weight: Double = 0.0,
+
+    @get:PropertyName("date") @set:PropertyName("date")
+    var date: Long = System.currentTimeMillis()
+) {
+    constructor() : this(0.0, System.currentTimeMillis())
+}
 
 data class SignUpUiState(
     val isLoading: Boolean = false,
@@ -53,6 +66,19 @@ data class BottomNavItem(
     val label: String
 )
 
+data class ChangeHistory(
+    @get:PropertyName("breakfast") @set:PropertyName("breakfast")
+    var breakfast: Long = 0L,
+
+    @get:PropertyName("lunch") @set:PropertyName("lunch")
+    var lunch: Long = 0L,
+
+    @get:PropertyName("dinner") @set:PropertyName("dinner")
+    var dinner: Long = 0L
+) {
+    constructor() : this(0L, 0L, 0L)
+}
+
 data class MealPlan(
     val id: String = "",
     val userId: String = "",
@@ -61,7 +87,8 @@ data class MealPlan(
     val lunch: Meal? = null,
     val dinner: Meal? = null,
     val totalCalories: Int = 0,
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    val changeHistory: ChangeHistory = ChangeHistory()
 )
 
 data class Meal(

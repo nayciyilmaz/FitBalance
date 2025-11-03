@@ -95,6 +95,93 @@ class GeminiRepository @Inject constructor(
         }
     }
 
+    suspend fun generateSingleMeal(
+        request: MealGenerationRequest,
+        mealType: String,
+        previousMealNames: List<String>
+    ): GeminiMealResult {
+        return try {
+            val prompt = buildSingleMealPrompt(request, mealType, previousMealNames)
+            val response = generativeModel.generateContent(prompt)
+            val responseText = response.text ?: return GeminiMealResult.Error("Yanıt alınamadı")
+
+            parseSingleMealResponse(responseText, mealType)
+        } catch (e: Exception) {
+            GeminiMealResult.Error(e.message ?: "Bilinmeyen hata")
+        }
+    }
+
+    private fun buildSingleMealPrompt(
+        request: MealGenerationRequest,
+        mealType: String,
+        previousMealNames: List<String>
+    ): String {
+        val goalText = when (request.goal) {
+            "Kilo Al" -> "kilo almak"
+            "Kilo Ver" -> "kilo vermek"
+            "Kilonu Koru" -> "kilosunu korumak"
+            else -> "sağlıklı beslenmek"
+        }
+
+        val mealTypeTurkish = when (mealType) {
+            "breakfast" -> "kahvaltı"
+            "lunch" -> "öğle yemeği"
+            "dinner" -> "akşam yemeği"
+            else -> "öğün"
+        }
+
+        val previousMealsText = if (previousMealNames.isNotEmpty()) {
+            "Kullanıcının bu öğün türünde geçmişte tükettiği yiyecekler: ${previousMealNames.joinToString(", ")}. Bu yiyecekleri göz önünde bulundurarak FARKLI ama benzer lezzette yiyecekler öner."
+        } else {
+            ""
+        }
+
+        return """
+        Bir fitness uygulaması için $mealTypeTurkish öğünü oluştur. Kullanıcı bilgileri:
+        - Boy: ${request.height} cm
+        - Kilo: ${request.weight} kg
+        - Yaş: ${request.age}
+        - Cinsiyet: ${request.gender}
+        - Hedef: $goalText
+        $previousMealsText
+        
+        Lütfen SADECE aşağıdaki JSON formatında yanıt ver, başka hiçbir açıklama ekleme:
+        {
+          "items": [
+            {"name": "Yiyecek adı", "calories": kalori_sayısı}
+          ]
+        }
+        
+        Kurallar:
+        - 3-5 yiyecek öner
+        - Kalori değerleri gerçekçi olsun
+        - Türk mutfağına uygun yiyecekler öner
+        - Önceki yiyeceklerden FARKLI seçenekler sun
+        - Sadece JSON formatında yanıt ver
+    """.trimIndent()
+    }
+
+    private fun parseSingleMealResponse(responseText: String, mealType: String): GeminiMealResult {
+        return try {
+            val cleanedText = responseText
+                .replace("```json", "")
+                .replace("```", "")
+                .trim()
+
+            val jsonObject = JSONObject(cleanedText)
+            val meal = parseMeal(jsonObject)
+
+            when (mealType) {
+                "breakfast" -> GeminiMealResult.Success(meal, Meal(), Meal())
+                "lunch" -> GeminiMealResult.Success(Meal(), meal, Meal())
+                "dinner" -> GeminiMealResult.Success(Meal(), Meal(), meal)
+                else -> GeminiMealResult.Error("Geçersiz öğün tipi")
+            }
+        } catch (e: Exception) {
+            GeminiMealResult.Error("Yanıt işlenemedi: ${e.message}")
+        }
+    }
+
     private fun parseMeal(mealJson: JSONObject): Meal {
         val itemsArray = mealJson.getJSONArray("items")
         val items = mutableListOf<MealItem>()

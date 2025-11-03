@@ -10,6 +10,7 @@ import com.example.fitbalance.R
 import com.example.fitbalance.data.SignUpUiState
 import com.example.fitbalance.data.UserData
 import com.example.fitbalance.data.ValidationErrors
+import com.example.fitbalance.data.WeightEntry
 import com.example.fitbalance.repository.AuthRepository
 import com.example.fitbalance.repository.AuthResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -115,12 +116,17 @@ class SignUpScreenViewModel @Inject constructor(
         viewModelScope.launch {
             uiState = uiState.copy(isLoading = true, errorMessage = null)
 
+            val initialWeightEntry = WeightEntry(
+                weight = inputWeight.toDouble(),
+                date = System.currentTimeMillis()
+            )
+
             val userData = UserData(
                 name = inputName.trim(),
                 surname = inputSurname.trim(),
                 email = inputMail.trim(),
                 height = inputHeight.toDouble(),
-                weight = inputWeight.toDouble(),
+                weightHistory = listOf(initialWeightEntry),
                 age = inputAge.toInt(),
                 gender = inputGender,
                 goal = inputGoal

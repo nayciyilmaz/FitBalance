@@ -60,13 +60,16 @@ fun MealCard(
                         modifier = modifier
                             .fillMaxWidth()
                             .padding(vertical = 2.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
                             text = name,
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.White,
-                            modifier = modifier.weight(1f)
+                            modifier = modifier
+                                .weight(1f, fill = false)
+                                .padding(end = 16.dp)
                         )
                         Text(
                             text = "$calories kcal",

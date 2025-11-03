@@ -9,5 +9,6 @@ enum class FitBalanceScreens(val route: String) {
     GoalScreen("goal_screen"),
     StatisticScreen("statistic_screen"),
     NotificationScreen("notification_screen"),
-    ProfileScreen("profile_screen")
+    ProfileScreen("profile_screen"),
+    SettingsScreen("settings_screen")
 }

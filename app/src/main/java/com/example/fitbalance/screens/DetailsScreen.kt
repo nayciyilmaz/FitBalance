@@ -48,10 +48,9 @@ import com.example.fitbalance.components.MealCard
 import com.example.fitbalance.viewmodels.DetailsScreenViewModel
 import com.example.fitbalance.viewmodels.HomeScreenViewModel
 import androidx.compose.runtime.rememberCoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.example.fitbalance.components.LoadingIndicator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun DetailsScreen(
@@ -95,6 +94,12 @@ fun DetailsScreen(
         }
     }
 
+    LaunchedEffect(homeViewModel.currentMealPlanId, mealType) {
+        if (homeViewModel.currentMealPlanId.isNotEmpty()) {
+            viewModel.checkCanChangeToday(homeViewModel.currentMealPlanId, mealType)
+        }
+    }
+
     EditScaffold(
         navController = navController,
         title = stringResource(R.string.detaylar),
@@ -109,8 +114,7 @@ fun DetailsScreen(
                 modifier = modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(20.dp)
-                    .padding(bottom = 80.dp),
+                    .padding(20.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -120,7 +124,7 @@ fun DetailsScreen(
                     modifier = modifier.fillMaxWidth()
                 )
 
-                if (!viewModel.isEditing) {
+                if (!viewModel.isEditing && !viewModel.isLoading) {
                     DetailsScreenActionButtons(
                         onEditClick = {
                             viewModel.startEditing(
@@ -128,7 +132,25 @@ fun DetailsScreen(
                                 homeViewModel.currentMealPlanId,
                                 mealType
                             )
-                        }
+                        },
+                        onChangeClick = {
+                            viewModel.changeMeal(
+                                homeViewModel.currentMealPlanId,
+                                mealType
+                            ) { newMeal ->
+                                homeViewModel.updateMeal(mealType, newMeal)
+                            }
+                        },
+                        onShareClick = {
+                            viewModel.shareMeal(mealTitle, mealItems)
+                        },
+                        canChange = viewModel.canChangeToday
+                    )
+                }
+
+                if (viewModel.isLoading) {
+                    LoadingIndicator(
+                        text = stringResource(R.string.yapayzeka_ögünplan)
                     )
                 }
 
@@ -158,7 +180,7 @@ fun DetailsScreen(
                             viewModel.cancelEditing()
                         }
                     )
-                } else {
+                } else if (!viewModel.isLoading) {
                     MealCard(
                         title = mealTitle,
                         items = mealItems,
@@ -167,7 +189,7 @@ fun DetailsScreen(
                 }
             }
 
-            if (!viewModel.isEditing) {
+            if (!viewModel.isEditing && !viewModel.isLoading) {
                 Column(
                     modifier = modifier
                         .fillMaxWidth()
@@ -183,12 +205,7 @@ fun DetailsScreen(
                             onClick = {
                                 scope.launch {
                                     homeViewModel.markMealStatusSync(mealType, true)
-                                    delay(100)
-                                    homeViewModel.forceRefresh()
-                                    delay(100)
-                                    withContext(Dispatchers.Main) {
-                                        navController.popBackStack()
-                                    }
+                                    navController.popBackStack()
                                 }
                             },
                             modifier = modifier.weight(1f)
@@ -199,12 +216,7 @@ fun DetailsScreen(
                             onClick = {
                                 scope.launch {
                                     homeViewModel.markMealStatusSync(mealType, false)
-                                    delay(100)
-                                    homeViewModel.forceRefresh()
-                                    delay(100)
-                                    withContext(Dispatchers.Main) {
-                                        navController.popBackStack()
-                                    }
+                                    navController.popBackStack()
                                 }
                             },
                             modifier = modifier.weight(1f)
@@ -245,7 +257,7 @@ fun DetailsScreenBottomButton(
                 fontSize = 12.sp
             ),
             textAlign = TextAlign.Center,
-            modifier = modifier.padding(top = 4.dp, bottom = 4.dp)
+            modifier = modifier.padding(vertical = 4.dp)
         )
     }
 }
@@ -253,31 +265,37 @@ fun DetailsScreenBottomButton(
 @Composable
 fun DetailsScreenActionButtons(
     onEditClick: () -> Unit = {},
+    onChangeClick: () -> Unit = {},
+    onShareClick: () -> Unit = {},
+    canChange: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 12.dp, bottom = 12.dp),
+            .padding(vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         ActionButtonItem(
             icon = Icons.Default.Edit,
             text = stringResource(R.string.düzenle),
             onClick = onEditClick,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            enabled = true
         )
         ActionButtonItem(
             icon = Icons.Default.AutoFixHigh,
             text = stringResource(R.string.değiştir),
-            onClick = { },
-            modifier = Modifier.weight(1f)
+            onClick = onChangeClick,
+            modifier = Modifier.weight(1f),
+            enabled = canChange
         )
         ActionButtonItem(
             icon = Icons.Default.Share,
             text = stringResource(R.string.paylaş),
-            onClick = { },
-            modifier = Modifier.weight(1f)
+            onClick = onShareClick,
+            modifier = Modifier.weight(1f),
+            enabled = true
         )
     }
 }
@@ -287,13 +305,14 @@ fun ActionButtonItem(
     icon: ImageVector,
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     Card(
         modifier = modifier
-            .clickable { onClick() },
+            .clickable(enabled = enabled) { onClick() },
         colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.blue)
+            containerColor = if (enabled) colorResource(R.color.blue) else Color.Gray
         )
     ) {
         Column(
@@ -306,12 +325,12 @@ fun ActionButtonItem(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = Color.White,
+                tint = if (enabled) Color.White else Color.White.copy(alpha = 0.5f),
                 modifier = Modifier.size(24.dp)
             )
             Text(
                 text = text,
-                color = Color.White,
+                color = if (enabled) Color.White else Color.White.copy(alpha = 0.5f),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.SemiBold
                 ),

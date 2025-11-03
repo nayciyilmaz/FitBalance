@@ -26,9 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.fitbalance.R
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.ui.res.stringResource
 
 @Composable
@@ -164,31 +161,6 @@ fun DetailsScreenEditableMealCard(
             }
         }
     }
-}
-
-@Composable
-fun CustomOutlinedTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    placeholder: String,
-    modifier: Modifier = Modifier,
-    keyboardType: KeyboardType = KeyboardType.Text
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier,
-        placeholder = { Text(placeholder, color = Color.White.copy(alpha = 0.8f)) },
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = Color.White,
-            unfocusedTextColor = Color.White,
-            focusedBorderColor = Color.White,
-            unfocusedBorderColor = Color.White.copy(alpha = 0.8f),
-            cursorColor = Color.White
-        ),
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        singleLine = true
-    )
 }
 
 @Composable
