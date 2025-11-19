@@ -2,16 +2,26 @@ package com.example.fitbalance.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material.icons.filled.Whatshot
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -85,15 +95,36 @@ fun HomeScreen(
                 )
             }
 
-            Text(
-                text = stringResource(R.string.ögünlerim),
+            Row(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                textAlign = TextAlign.Start
+                    .padding(top = 12.dp, bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Restaurant,
+                    contentDescription = null,
+                    tint = colorResource(R.color.green),
+                    modifier = Modifier
+                        .padding(end = 12.dp)
+                        .align(Alignment.CenterVertically)
+                )
+                Text(
+                    text = stringResource(R.string.ögünlerim),
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = colorResource(R.color.green)
+                    ),
+                    textAlign = TextAlign.Start
+                )
+            }
+            HorizontalDivider(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                thickness = 1.dp,
+                color = colorResource(R.color.green)
             )
 
             if (viewModel.isLoading) {
@@ -198,25 +229,89 @@ fun HomeScreenDateCard(
         )
     ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.Start
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = currentDate,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = Color.White,
-                    fontWeight = FontWeight.ExtraBold
-                )
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = modifier
+                        .background(
+                            color = Color.White.copy(alpha = 0.2f),
+                            shape = CircleShape
+                        )
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Whatshot,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                }
+
+                Column(modifier = modifier.padding(start = 16.dp)) {
+                    Text(
+                        text = "Gün içerisinde alınan kalori :",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    Text(
+                        text = "$caloriesBurned kcal",
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            color = Color.White,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    )
+                }
+            }
+
+            HorizontalDivider(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                thickness = 1.dp,
+                color = Color.White.copy(alpha = 0.7f)
             )
-            Text(
-                text = "Gün içerisinde alınan kalori = $caloriesBurned kcal",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    color = Color.White
-                ),
-                modifier = Modifier.padding(top = 8.dp)
-            )
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = modifier
+                        .background(
+                            color = Color.White.copy(alpha = 0.2f),
+                            shape = CircleShape
+                        )
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarMonth,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                }
+
+                Column(modifier = modifier.padding(start = 16.dp)) {
+                    Text(
+                        text = "Bugünün tarihi :",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                           color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    Text(
+                        text = currentDate,
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            color = Color.White,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    )
+                }
+            }
         }
     }
 }

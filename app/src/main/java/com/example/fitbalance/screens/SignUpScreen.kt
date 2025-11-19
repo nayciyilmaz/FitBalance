@@ -1,6 +1,5 @@
 package com.example.fitbalance.screens
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,9 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +29,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fitbalance.R
 import com.example.fitbalance.components.EditOutlineSpinner
 import com.example.fitbalance.components.EditOutlineTextField
+import com.example.fitbalance.components.EditSignButtons
+import com.example.fitbalance.components.EditTextButton
 import com.example.fitbalance.components.ValidationErrorText
 import com.example.fitbalance.navigation.FitBalanceScreens
 import com.example.fitbalance.viewmodels.SignUpScreenViewModel
@@ -232,7 +230,8 @@ fun SignUpScreen(
                 }
             }
 
-            Button(
+            EditSignButtons(
+                text = stringResource(R.string.sign_up),
                 onClick = {
                     viewModel.signUp {
                         navController.navigate(FitBalanceScreens.SignInScreen.route) {
@@ -240,48 +239,19 @@ fun SignUpScreen(
                         }
                     }
                 },
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = colorResource(id = R.color.green)
-                ),
-                enabled = !uiState.isLoading
-            ) {
-                Text(
-                    text = stringResource(R.string.sign_up),
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    ),
-                    modifier = modifier.padding(vertical = 8.dp)
-                )
-            }
+                enabled = !uiState.isLoading,
+                modifier = modifier.padding(top = 24.dp)
+            )
 
-            ElevatedButton(
+            EditTextButton(
+                text = stringResource(R.string.already_have_account),
                 onClick = {
                     navController.navigate(FitBalanceScreens.SignInScreen.route) {
                         popUpTo(FitBalanceScreens.SignUpScreen.route) { inclusive = true }
                     }
                 },
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = Color.White
-                ),
-                border = BorderStroke(1.dp, Color.White)
-            ) {
-                Text(
-                    text = stringResource(R.string.already_have_account),
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    ),
-                    modifier = modifier.padding(vertical = 8.dp)
-                )
-            }
+                modifier = modifier.padding(top = 8.dp)
+            )
         }
     }
 }

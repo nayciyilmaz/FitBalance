@@ -16,14 +16,12 @@ class MealRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore
 ) {
-
     private val currentUserId: String?
         get() = firebaseAuth.currentUser?.uid
 
     suspend fun saveMealPlan(mealPlan: MealPlan): MealResult {
         return try {
             val userId = currentUserId ?: return MealResult.Error("Kullanıcı bulunamadı")
-
             val mealPlanWithUser = mealPlan.copy(
                 userId = userId,
                 id = if (mealPlan.id.isEmpty()) firestore.collection("meal_plans").document().id else mealPlan.id
@@ -44,7 +42,6 @@ class MealRepository @Inject constructor(
         return try {
             val userId = currentUserId ?: return MealResult.Error("Kullanıcı bulunamadı")
             val today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
-
             val snapshot = firestore.collection("meal_plans")
                 .whereEqualTo("userId", userId)
                 .whereEqualTo("date", today)
@@ -73,10 +70,11 @@ class MealRepository @Inject constructor(
         return try {
             val docRef = firestore.collection("meal_plans").document(mealPlanId)
             val snapshot = docRef.get().await()
+
             val mealPlan = snapshot.toObject(MealPlan::class.java)
                 ?: return MealResult.Error("Öğün planı bulunamadı")
-
             val currentTime = System.currentTimeMillis()
+
             val updatedChangeHistory = when (mealType) {
                 "breakfast" -> mealPlan.changeHistory.copy(breakfast = currentTime)
                 "lunch" -> mealPlan.changeHistory.copy(lunch = currentTime)
@@ -107,7 +105,6 @@ class MealRepository @Inject constructor(
     suspend fun getMealHistory(mealType: String, limit: Int = 30): List<String> {
         return try {
             val userId = currentUserId ?: return emptyList()
-
             val snapshot = firestore.collection("meal_plans")
                 .whereEqualTo("userId", userId)
                 .orderBy("createdAt", Query.Direction.DESCENDING)
@@ -145,7 +142,6 @@ class MealRepository @Inject constructor(
         val changeDate = java.time.Instant.ofEpochMilli(changeTimestamp)
             .atZone(java.time.ZoneId.systemDefault())
             .toLocalDate()
-
         val today = java.time.LocalDate.now()
 
         return changeDate.isBefore(today)
@@ -153,7 +149,6 @@ class MealRepository @Inject constructor(
     suspend fun getPreviousMeals(limit: Int = 30): List<String> {
         return try {
             val userId = currentUserId ?: return emptyList()
-
             val snapshot = firestore.collection("meal_plans")
                 .whereEqualTo("userId", userId)
                 .orderBy("createdAt", Query.Direction.DESCENDING)
@@ -179,8 +174,8 @@ class MealRepository @Inject constructor(
     suspend fun markMealAsCompleted(mealPlanId: String, mealType: String, isCompleted: Boolean): MealResult {
         return try {
             val docRef = firestore.collection("meal_plans").document(mealPlanId)
-
             val snapshot = docRef.get().await()
+
             if (!snapshot.exists()) {
                 return MealResult.Error("Öğün planı bulunamadı")
             }
@@ -228,9 +223,9 @@ class MealRepository @Inject constructor(
     suspend fun updateMeal(mealPlanId: String, mealType: String, updatedMeal: com.example.fitbalance.data.Meal): MealResult {
         return try {
             val userId = currentUserId ?: return MealResult.Error("Kullanıcı bulunamadı")
-
             val docRef = firestore.collection("meal_plans").document(mealPlanId)
             val snapshot = docRef.get().await()
+
             val mealPlan = snapshot.toObject(MealPlan::class.java)
                 ?: return MealResult.Error("Öğün planı bulunamadı")
 

@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -27,6 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.fitbalance.R
 import androidx.compose.ui.res.stringResource
+import java.util.Locale
 
 @Composable
 fun DetailsScreenEditableMealCard(
@@ -46,7 +45,7 @@ fun DetailsScreenEditableMealCard(
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.green)
+            containerColor = colorResource(R.color.green).copy(alpha = 0.9f)
         )
     ) {
         Column(
@@ -56,7 +55,7 @@ fun DetailsScreenEditableMealCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = title,
+                text = title.uppercase(Locale("tr")),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -141,42 +140,24 @@ fun DetailsScreenEditableMealCard(
                     .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                CustomButton(
-                    onClick = onAddItem,
+                EditDetailsButtons(
                     text = stringResource(R.string.ekle),
+                    onClick = onAddItem,
                     modifier = modifier.weight(1f)
                 )
 
-                CustomButton(
-                    onClick = onConfirm,
+                EditDetailsButtons(
                     text = stringResource(R.string.onayla),
+                    onClick = onConfirm,
                     modifier = modifier.weight(1f)
                 )
 
-                CustomButton(
-                    onClick = onCancel,
+                EditDetailsButtons(
                     text = stringResource(R.string.iptal),
+                    onClick = onCancel,
                     modifier = modifier.weight(1f)
                 )
             }
         }
-    }
-}
-
-@Composable
-fun CustomButton(
-    onClick: () -> Unit,
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White,
-            contentColor = colorResource(R.color.green)
-        )
-    ) {
-        Text(text = text)
     }
 }

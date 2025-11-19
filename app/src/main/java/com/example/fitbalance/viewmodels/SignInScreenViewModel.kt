@@ -59,23 +59,91 @@ class SignInScreenViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            uiState = uiState.copy(isLoading = true, errorMessage = null)
+            uiState = uiState.copy(
+                isLoading = true,
+                errorMessage = null,
+                validationErrors = SignInValidationErrors()
+            )
 
             when (val result = authRepository.signIn(inputMail.trim(), inputPassword)) {
                 is AuthResult.Success -> {
                     uiState = uiState.copy(
                         isLoading = false,
                         isSuccess = true,
-                        errorMessage = null
+                        errorMessage = null,
+                        validationErrors = SignInValidationErrors()
                     )
                     onSuccess()
                 }
                 is AuthResult.Error -> {
+                    val validationErrors = mapFirebaseErrorToValidation(result.message)
                     uiState = uiState.copy(
                         isLoading = false,
-                        errorMessage = result.message
+                        validationErrors = validationErrors
                     )
                 }
+            }
+        }
+    }
+
+    private fun mapFirebaseErrorToValidation(errorMessage: String?): SignInValidationErrors {
+        return when {
+            errorMessage?.contains("user-not-found", ignoreCase = true) == true ||
+                    errorMessage?.contains("no user record", ignoreCase = true) == true ||
+                    errorMessage?.contains("ERROR_USER_NOT_FOUND", ignoreCase = true) == true -> {
+                SignInValidationErrors(
+                    emailError = context.getString(R.string.error_user_not_found)
+                )
+            }
+
+            errorMessage?.contains("wrong-password", ignoreCase = true) == true ||
+                    errorMessage?.contains("password is invalid", ignoreCase = true) == true ||
+                    errorMessage?.contains("ERROR_WRONG_PASSWORD", ignoreCase = true) == true -> {
+                SignInValidationErrors(
+                    passwordError = context.getString(R.string.error_wrong_password)
+                )
+            }
+
+            errorMessage?.contains("user-disabled", ignoreCase = true) == true ||
+                    errorMessage?.contains("account has been disabled", ignoreCase = true) == true ||
+                    errorMessage?.contains("ERROR_USER_DISABLED", ignoreCase = true) == true -> {
+                SignInValidationErrors(
+                    emailError = context.getString(R.string.error_user_disabled)
+                )
+            }
+
+            errorMessage?.contains("too-many-requests", ignoreCase = true) == true ||
+                    errorMessage?.contains("TOO_MANY_ATTEMPTS_TRY_LATER", ignoreCase = true) == true ||
+                    errorMessage?.contains("too many", ignoreCase = true) == true -> {
+                SignInValidationErrors(
+                    emailError = context.getString(R.string.error_too_many_requests),
+                    passwordError = context.getString(R.string.error_too_many_requests)
+                )
+            }
+
+            errorMessage?.contains("network", ignoreCase = true) == true ||
+                    errorMessage?.contains("connection", ignoreCase = true) == true ||
+                    errorMessage?.contains("ERROR_NETWORK_REQUEST_FAILED", ignoreCase = true) == true -> {
+                SignInValidationErrors(
+                    emailError = context.getString(R.string.error_network_request_failed),
+                    passwordError = context.getString(R.string.error_network_request_failed)
+                )
+            }
+
+            errorMessage?.contains("invalid-credential", ignoreCase = true) == true ||
+                    errorMessage?.contains("invalid credential", ignoreCase = true) == true ||
+                    errorMessage?.contains("INVALID_LOGIN_CREDENTIALS", ignoreCase = true) == true -> {
+                SignInValidationErrors(
+                    emailError = context.getString(R.string.error_invalid_credential),
+                    passwordError = context.getString(R.string.error_invalid_credential)
+                )
+            }
+
+            else -> {
+                SignInValidationErrors(
+                    emailError = context.getString(R.string.error_sign_in_failed),
+                    passwordError = context.getString(R.string.error_sign_in_failed)
+                )
             }
         }
     }
@@ -83,14 +151,12 @@ class SignInScreenViewModel @Inject constructor(
     private fun validateInputs(): SignInValidationErrors {
         var errors = SignInValidationErrors()
 
-        // Email validation
         if (inputMail.trim().isEmpty()) {
             errors = errors.copy(emailError = context.getString(R.string.error_email_empty))
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(inputMail.trim()).matches()) {
             errors = errors.copy(emailError = context.getString(R.string.error_email_invalid))
         }
 
-        // Password validation
         if (inputPassword.isEmpty()) {
             errors = errors.copy(passwordError = context.getString(R.string.error_password_empty))
         } else if (inputPassword.length < 6) {
@@ -100,6 +166,7 @@ class SignInScreenViewModel @Inject constructor(
         return errors
     }
 }
+
 private fun SignInValidationErrors.hasErrors(): Boolean {
     return emailError != null || passwordError != null
 }

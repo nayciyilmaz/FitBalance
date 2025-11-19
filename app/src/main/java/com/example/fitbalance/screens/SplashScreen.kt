@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fitbalance.R
+import com.example.fitbalance.components.EditSignButtons
 import com.example.fitbalance.navigation.FitBalanceScreens
 
 @Composable
@@ -75,11 +73,11 @@ fun SplashScreen(
                     text = stringResource(R.string.title_name),
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.ExtraBold
                     ),
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    modifier = modifier.padding(top = 32.dp, bottom = 16.dp)
+                    modifier = modifier.padding(vertical = 24.dp)
                 )
 
                 Text(
@@ -90,24 +88,11 @@ fun SplashScreen(
                 )
             }
 
-            Button(
+            EditSignButtons(
+                text = stringResource(R.string.splash_button),
                 onClick = { navController.navigate(FitBalanceScreens.SignInScreen.route) },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = colorResource(R.color.green)
-                ),
-                shape = RoundedCornerShape(12.dp),
                 modifier = modifier
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.splash_button),
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    modifier = modifier.padding(12.dp)
-                )
-            }
+            )
         }
     }
 }

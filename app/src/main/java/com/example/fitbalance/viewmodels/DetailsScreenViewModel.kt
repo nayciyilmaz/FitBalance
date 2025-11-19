@@ -69,7 +69,6 @@ class DetailsScreenViewModel @Inject constructor(
 
     fun confirmEditing(onSuccess: (Meal) -> Unit) {
         viewModelScope.launch {
-            isLoading = true
             errorMessage = null
 
             val mealItems = editableMealItems.mapNotNull { (name, calories) ->
@@ -81,7 +80,6 @@ class DetailsScreenViewModel @Inject constructor(
 
             if (mealItems.isEmpty()) {
                 errorMessage = "En az bir yiyecek eklemelisiniz"
-                isLoading = false
                 return@launch
             }
 
@@ -96,7 +94,6 @@ class DetailsScreenViewModel @Inject constructor(
                 is MealResult.Success -> {
                     isEditing = false
                     editableMealItems = emptyList()
-                    isLoading = false
                     result.mealPlan?.let { plan ->
                         val meal = when (currentMealType) {
                             "breakfast" -> plan.breakfast
@@ -109,7 +106,6 @@ class DetailsScreenViewModel @Inject constructor(
                 }
                 is MealResult.Error -> {
                     errorMessage = result.message
-                    isLoading = false
                 }
             }
         }
@@ -138,7 +134,6 @@ class DetailsScreenViewModel @Inject constructor(
                 }
 
                 val previousMealNames = mealRepository.getMealHistory(mealType, 30)
-
                 val request = MealGenerationRequest(
                     height = userData.height,
                     weight = userData.currentWeight,

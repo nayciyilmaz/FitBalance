@@ -1,9 +1,11 @@
 package com.example.fitbalance.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,18 +13,17 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -35,9 +36,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fitbalance.R
 import com.example.fitbalance.components.EditOutlineTextField
+import com.example.fitbalance.components.EditSignButtons
+import com.example.fitbalance.components.EditTextButton
 import com.example.fitbalance.components.ValidationErrorText
 import com.example.fitbalance.navigation.FitBalanceScreens
 import com.example.fitbalance.viewmodels.SignInScreenViewModel
+import java.util.Locale
 
 @Composable
 fun SignInScreen(
@@ -66,19 +70,28 @@ fun SignInScreen(
                 .fillMaxSize()
                 .padding(horizontal = 32.dp)
         ) {
+
+            Image(
+                painter = painterResource(R.drawable.foto1),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = modifier
+                    .fillMaxWidth(0.8f)
+                    .aspectRatio(1f)
+            )
             Text(
-                text = stringResource(R.string.sign_in).uppercase(),
+                text = stringResource(R.string.sign_in).uppercase(Locale("tr")),
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold
                 ),
-                color = Color.White
+                color = Color.White,
+                modifier = modifier.padding(top = 24.dp, bottom = 16.dp)
             )
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp)
             ) {
                 EditOutlineTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -132,7 +145,8 @@ fun SignInScreen(
                 }
             }
 
-            Button(
+            EditSignButtons(
+                text = stringResource(R.string.sign_in),
                 onClick = {
                     viewModel.signIn {
                         navController.navigate(FitBalanceScreens.HomeScreen.route) {
@@ -140,33 +154,14 @@ fun SignInScreen(
                         }
                     }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 32.dp, bottom = 12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = colorResource(id = R.color.green)
-                ),
-                enabled = !uiState.isLoading
-            ) {
-                Text(
-                    text = stringResource(R.string.sign_in),
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            }
+                enabled = !uiState.isLoading,
+                modifier = Modifier.padding(top = 24.dp, bottom = 8.dp)
+            )
 
-            TextButton(
+            EditTextButton(
+                text = stringResource(R.string.text_button_title),
                 onClick = { navController.navigate(FitBalanceScreens.SignUpScreen.route) }
-            ) {
-                Text(
-                    text = stringResource(R.string.text_button_title),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
-                )
-            }
+            )
         }
     }
 }

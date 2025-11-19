@@ -15,8 +15,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -40,6 +38,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fitbalance.R
 import com.example.fitbalance.components.EditScaffold
+import com.example.fitbalance.components.EditButtons
 import com.example.fitbalance.navigation.FitBalanceScreens
 import com.example.fitbalance.viewmodels.ProfileScreenViewModel
 
@@ -124,7 +123,8 @@ fun ProfileScreen(
                         }
                     )
 
-                    Button(
+                    EditButtons(
+                        text = stringResource(R.string.log_out),
                         onClick = {
                             viewModel.signOut {
                                 navController.navigate(FitBalanceScreens.SignInScreen.route) {
@@ -132,23 +132,8 @@ fun ProfileScreen(
                                 }
                             }
                         },
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 6.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(id = R.color.dark_green),
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(
-                            text = stringResource(R.string.log_out),
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
-                            ),
-                            modifier = modifier.padding(vertical = 8.dp)
-                        )
-                    }
+                        modifier = modifier.padding(horizontal = 6.dp)
+                    )
                 }
             }
         }
@@ -236,25 +221,13 @@ fun ProfileDetailsCard(
                 )
             }
 
-            Button(
+            EditButtons(
+                text = stringResource(R.string.update_details),
                 onClick = onSettingsClick,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = colorResource(id = R.color.green)
-                )
-            ) {
-                Text(
-                    text = stringResource(R.string.update_details),
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    ),
-                    modifier = modifier.padding(vertical = 8.dp)
-                )
-            }
+                modifier = modifier.padding(top = 20.dp),
+                containerColor = Color.White,
+                contentColor = colorResource(id = R.color.green)
+            )
         }
     }
 }
@@ -285,7 +258,7 @@ fun ProfileInfoItem(
                     fontWeight = FontWeight.Medium,
                     fontSize = 12.sp
                 ),
-                color = Color.White.copy(alpha = 0.8f)
+                color = Color.White.copy(alpha = 0.85f)
             )
             Text(
                 text = value,

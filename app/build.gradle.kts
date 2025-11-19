@@ -80,6 +80,10 @@ dependencies {
 
     // Gemini AI
     implementation("com.google.ai.client.generativeai:generativeai:latest.release")
+
+    //Date
+    implementation("com.google.android.material:material:1.13.0")
+    implementation("com.kizitonwose.calendar:compose:2.9.0")
 }
 
 kapt {

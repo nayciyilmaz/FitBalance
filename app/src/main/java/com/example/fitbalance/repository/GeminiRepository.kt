@@ -13,7 +13,6 @@ import javax.inject.Singleton
 class GeminiRepository @Inject constructor(
     private val generativeModel: GenerativeModel
 ) {
-
     suspend fun generateMealPlan(request: MealGenerationRequest): GeminiMealResult {
         return try {
             val prompt = buildMealPrompt(request)
@@ -84,7 +83,6 @@ class GeminiRepository @Inject constructor(
                 .trim()
 
             val jsonObject = JSONObject(cleanedText)
-
             val breakfast = parseMeal(jsonObject.getJSONObject("breakfast"))
             val lunch = parseMeal(jsonObject.getJSONObject("lunch"))
             val dinner = parseMeal(jsonObject.getJSONObject("dinner"))

@@ -114,7 +114,11 @@ class SignUpScreenViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            uiState = uiState.copy(isLoading = true, errorMessage = null)
+            uiState = uiState.copy(
+                isLoading = true,
+                errorMessage = null,
+                validationErrors = ValidationErrors()
+            )
 
             val initialWeightEntry = WeightEntry(
                 weight = inputWeight.toDouble(),
@@ -137,16 +141,85 @@ class SignUpScreenViewModel @Inject constructor(
                     uiState = uiState.copy(
                         isLoading = false,
                         isSuccess = true,
-                        errorMessage = null
+                        errorMessage = null,
+                        validationErrors = ValidationErrors()
                     )
                     onSuccess()
                 }
                 is AuthResult.Error -> {
+                    val validationErrors = mapFirebaseErrorToValidation(result.message)
                     uiState = uiState.copy(
                         isLoading = false,
-                        errorMessage = result.message
+                        validationErrors = validationErrors
                     )
                 }
+            }
+        }
+    }
+
+    private fun mapFirebaseErrorToValidation(errorMessage: String?): ValidationErrors {
+        return when {
+            errorMessage?.contains("email-already-in-use", ignoreCase = true) == true ||
+                    errorMessage?.contains("email address is already", ignoreCase = true) == true ||
+                    errorMessage?.contains("ERROR_EMAIL_ALREADY_IN_USE", ignoreCase = true) == true -> {
+                ValidationErrors(
+                    emailError = context.getString(R.string.error_email_already_in_use)
+                )
+            }
+
+            errorMessage?.contains("weak-password", ignoreCase = true) == true ||
+                    errorMessage?.contains("password should be at least", ignoreCase = true) == true ||
+                    errorMessage?.contains("ERROR_WEAK_PASSWORD", ignoreCase = true) == true -> {
+                ValidationErrors(
+                    passwordError = context.getString(R.string.error_weak_password)
+                )
+            }
+
+            errorMessage?.contains("invalid-email", ignoreCase = true) == true ||
+                    errorMessage?.contains("badly formatted", ignoreCase = true) == true ||
+                    errorMessage?.contains("ERROR_INVALID_EMAIL", ignoreCase = true) == true -> {
+                ValidationErrors(
+                    emailError = context.getString(R.string.error_email_invalid_firebase)
+                )
+            }
+
+            errorMessage?.contains("user-disabled", ignoreCase = true) == true ||
+                    errorMessage?.contains("ERROR_USER_DISABLED", ignoreCase = true) == true -> {
+                ValidationErrors(
+                    emailError = context.getString(R.string.error_user_disabled)
+                )
+            }
+
+            errorMessage?.contains("too-many-requests", ignoreCase = true) == true ||
+                    errorMessage?.contains("too many", ignoreCase = true) == true -> {
+                ValidationErrors(
+                    emailError = context.getString(R.string.error_too_many_requests),
+                    passwordError = context.getString(R.string.error_too_many_requests)
+                )
+            }
+
+            errorMessage?.contains("operation-not-allowed", ignoreCase = true) == true ||
+                    errorMessage?.contains("ERROR_OPERATION_NOT_ALLOWED", ignoreCase = true) == true -> {
+                ValidationErrors(
+                    emailError = context.getString(R.string.error_operation_not_allowed),
+                    passwordError = context.getString(R.string.error_operation_not_allowed)
+                )
+            }
+
+            errorMessage?.contains("network", ignoreCase = true) == true ||
+                    errorMessage?.contains("connection", ignoreCase = true) == true ||
+                    errorMessage?.contains("ERROR_NETWORK_REQUEST_FAILED", ignoreCase = true) == true -> {
+                ValidationErrors(
+                    emailError = context.getString(R.string.error_network_request_failed),
+                    passwordError = context.getString(R.string.error_network_request_failed)
+                )
+            }
+
+            else -> {
+                ValidationErrors(
+                    emailError = context.getString(R.string.error_signup_failed).format(errorMessage ?: ""),
+                    passwordError = context.getString(R.string.error_signup_failed).format(errorMessage ?: "")
+                )
             }
         }
     }
@@ -154,7 +227,6 @@ class SignUpScreenViewModel @Inject constructor(
     private fun validateInputs(): ValidationErrors {
         var errors = ValidationErrors()
 
-        // Name validation
         if (inputName.trim().isEmpty()) {
             errors = errors.copy(nameError = context.getString(R.string.error_name_empty))
         } else if (inputName.trim().length < 2) {
@@ -163,7 +235,6 @@ class SignUpScreenViewModel @Inject constructor(
             errors = errors.copy(nameError = context.getString(R.string.error_name_letters_only))
         }
 
-        // Surname validation
         if (inputSurname.trim().isEmpty()) {
             errors = errors.copy(surnameError = context.getString(R.string.error_surname_empty))
         } else if (inputSurname.trim().length < 2) {
@@ -172,14 +243,12 @@ class SignUpScreenViewModel @Inject constructor(
             errors = errors.copy(surnameError = context.getString(R.string.error_surname_letters_only))
         }
 
-        // Email validation
         if (inputMail.trim().isEmpty()) {
             errors = errors.copy(emailError = context.getString(R.string.error_email_empty))
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(inputMail.trim()).matches()) {
             errors = errors.copy(emailError = context.getString(R.string.error_email_invalid))
         }
 
-        // Password validation
         if (inputPassword.isEmpty()) {
             errors = errors.copy(passwordError = context.getString(R.string.error_password_empty))
         } else if (inputPassword.length < 6) {
@@ -190,7 +259,6 @@ class SignUpScreenViewModel @Inject constructor(
             errors = errors.copy(passwordError = context.getString(R.string.error_password_needs_letter))
         }
 
-        // Height validation
         if (inputHeight.trim().isEmpty()) {
             errors = errors.copy(heightError = context.getString(R.string.error_height_empty))
         } else {
@@ -202,7 +270,6 @@ class SignUpScreenViewModel @Inject constructor(
             }
         }
 
-        // Weight validation
         if (inputWeight.trim().isEmpty()) {
             errors = errors.copy(weightError = context.getString(R.string.error_weight_empty))
         } else {
@@ -214,7 +281,6 @@ class SignUpScreenViewModel @Inject constructor(
             }
         }
 
-        // Age validation
         if (inputAge.trim().isEmpty()) {
             errors = errors.copy(ageError = context.getString(R.string.error_age_empty))
         } else {
@@ -226,12 +292,10 @@ class SignUpScreenViewModel @Inject constructor(
             }
         }
 
-        // Gender validation
         if (inputGender.isEmpty()) {
             errors = errors.copy(genderError = context.getString(R.string.error_gender_empty))
         }
 
-        // Goal validation
         if (inputGoal.isEmpty()) {
             errors = errors.copy(goalError = context.getString(R.string.error_goal_empty))
         }
@@ -239,6 +303,7 @@ class SignUpScreenViewModel @Inject constructor(
         return errors
     }
 }
+
 private fun ValidationErrors.hasErrors(): Boolean {
     return nameError != null || surnameError != null || emailError != null ||
             passwordError != null || heightError != null || weightError != null ||

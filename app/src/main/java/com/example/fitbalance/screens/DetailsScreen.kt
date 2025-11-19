@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,8 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -36,7 +33,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -49,6 +45,7 @@ import com.example.fitbalance.viewmodels.DetailsScreenViewModel
 import com.example.fitbalance.viewmodels.HomeScreenViewModel
 import androidx.compose.runtime.rememberCoroutineScope
 import com.example.fitbalance.components.LoadingIndicator
+import com.example.fitbalance.components.EditDetailsButtons
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -200,7 +197,7 @@ fun DetailsScreen(
                         modifier = modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        DetailsScreenBottomButton(
+                        EditDetailsButtons(
                             text = stringResource(R.string.yaptım),
                             onClick = {
                                 scope.launch {
@@ -208,10 +205,12 @@ fun DetailsScreen(
                                     navController.popBackStack()
                                 }
                             },
-                            modifier = modifier.weight(1f)
+                            modifier = modifier.weight(1f),
+                            containerColor = colorResource(R.color.green),
+                            contentColor = Color.White
                         )
 
-                        DetailsScreenBottomButton(
+                        EditDetailsButtons(
                             text = stringResource(R.string.yapmadım),
                             onClick = {
                                 scope.launch {
@@ -219,46 +218,24 @@ fun DetailsScreen(
                                     navController.popBackStack()
                                 }
                             },
-                            modifier = modifier.weight(1f)
+                            modifier = modifier.weight(1f),
+                            containerColor = colorResource(R.color.green),
+                            contentColor = Color.White
                         )
 
-                        DetailsScreenBottomButton(
+                        EditDetailsButtons(
                             text = stringResource(R.string.geri),
                             onClick = {
                                 navController.popBackStack()
                             },
-                            modifier = modifier.weight(1f)
+                            modifier = modifier.weight(1f),
+                            containerColor = colorResource(R.color.green),
+                            contentColor = Color.White
                         )
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun DetailsScreenBottomButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = colorResource(R.color.green),
-            contentColor = Color.White
-        )
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 12.sp
-            ),
-            textAlign = TextAlign.Center,
-            modifier = modifier.padding(vertical = 4.dp)
-        )
     }
 }
 
@@ -311,6 +288,7 @@ fun ActionButtonItem(
     Card(
         modifier = modifier
             .clickable(enabled = enabled) { onClick() },
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (enabled) colorResource(R.color.blue) else Color.Gray
         )
@@ -318,7 +296,7 @@ fun ActionButtonItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp, horizontal = 12.dp),
+                .padding(vertical = 16.dp, horizontal = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -326,16 +304,17 @@ fun ActionButtonItem(
                 imageVector = icon,
                 contentDescription = null,
                 tint = if (enabled) Color.White else Color.White.copy(alpha = 0.5f),
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier
+                    .padding(bottom = 4.dp)
             )
             Text(
                 text = text,
                 color = if (enabled) Color.White else Color.White.copy(alpha = 0.5f),
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.Bold
                 ),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = 6.dp)
             )
         }
     }

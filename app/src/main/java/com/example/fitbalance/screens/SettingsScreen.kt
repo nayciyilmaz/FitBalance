@@ -17,8 +17,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -44,6 +42,7 @@ import com.example.fitbalance.components.EditOutlineSpinner
 import com.example.fitbalance.components.EditScaffold
 import com.example.fitbalance.components.SettingsInputField
 import com.example.fitbalance.components.ValidationErrorText
+import com.example.fitbalance.components.EditButtons
 import com.example.fitbalance.navigation.FitBalanceScreens
 import com.example.fitbalance.viewmodels.SettingsScreenViewModel
 
@@ -226,26 +225,15 @@ fun SettingsScreen(
                         .padding(top = 20.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Button(
+                    EditButtons(
+                        text = stringResource(R.string.geri),
                         onClick = { navController.popBackStack() },
-                        modifier = modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFE0E0E0),
-                            contentColor = Color(0xFF666666)
-                        )
-                    ) {
-                        Text(
-                            text = stringResource(R.string.geri),
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
-                            ),
-                            modifier = modifier.padding(vertical = 10.dp)
-                        )
-                    }
+                        containerColor = Color(0xFFE0E0E0),
+                        contentColor = Color(0xFF666666)
+                    )
 
-                    Button(
+                    EditButtons(
+                        text = stringResource(R.string.save_changes),
                         onClick = {
                             viewModel.saveChanges {
                                 navController.navigate(FitBalanceScreens.ProfileScreen.route) {
@@ -253,22 +241,8 @@ fun SettingsScreen(
                                 }
                             }
                         },
-                        modifier = modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.dark_green)
-                        ),
                         enabled = !viewModel.isLoading
-                    ) {
-                        Text(
-                            text = stringResource(R.string.save_changes),
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
-                            ),
-                            modifier = modifier.padding(vertical = 10.dp)
-                        )
-                    }
+                    )
                 }
             }
         }

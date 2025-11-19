@@ -26,6 +26,7 @@
     <string name="detaylar">Detaylar</string>
     <string name="hedefler">Hedefler</string>
     <string name="total_kalori">Toplam Kalori : </string>
+    <string name="total_alinan_kalori">Toplam Alınan Kalori : </string>
     <string name="kalori">Kalori</string>
     <string name="yiyecek_adi">Yiyecek Adı </string>
     <string name="bildirimler">Bildirimler</string>
@@ -41,11 +42,12 @@
     <string name="ögün_plan">Öğün Planı Oluştur</string>
     <string name="yapayzeka_ögün_plan">Yapay Zeka öğünleri oluşturuyor</string>
     <string name="yapayzeka_ögünplan">Yapay Zeka öğünü değiştiriyor</string>
+    <string name="date_meal">Bu tarih için öğün planı bulunamadı</string>
     <string name="ögünlerim">ÖĞÜNLERİM</string>
     <string name="tüm_ögün">Bugünün tüm öğünlerini tamamladınız!</string>
     <string name="add_kalori">Ekleyeceğiniz yiyeceğin kalori miktarını öğreniniz.</string>
     <string name="text_button_title">Buraya tıklayarak hemen üye olun.</string>
-    <string name="already_have_account">Zaten hesabın var mı? Giriş Yap</string>
+    <string name="already_have_account">Zaten hesabın var mı? Giriş Yap.</string>
     <string name="personal_info">Kişisel Bilgiler</string>
     <string name="physical_info">Fiziksel Özellikler</string>
     <string name="account_info">Hesap Bilgileri</string>
@@ -55,6 +57,12 @@
     <string name="new_password_confirm">Yeni Şifre (Tekrar)</string>
     <string name="save_changes">Değişiklikleri Kaydet</string>
     <string name="gender_label">Cinsiyet</string>
+    <string name="kilo_takibi">Kilo Değişimi</string>
+    <string name="gunluk_ortalama_kalori">Günlük Orta. Kalori</string>
+    <string name="toplam_degisim">Toplam Değişim</string>
+    <string name="genel_ortalama">Genel Ortalama</string>
+    <string name="veri_yok">Veri Yok</string>
+    <string name="yeterli_veri_yok">Bu dönem için yeterli veri bulunmuyor</string>
     <string name="gender_female">Kadın</string>
     <string name="gender_male">Erkek</string>
     <string name="goal_label">Hedef</string>
@@ -73,6 +81,9 @@
         <item>
             İstatistik bölümünden geçmiş günlerdeki aldığın kalori miktarını ve yediğin öğünlerini görebilirsin.
         </item>
+        <item>
+            Profil -> Bilgileri Güncelle bölümünden kilonu güncelleyebilir ve şifreni değiştirebilirsin.
+        </item>
     </string-array>
 
     <string-array name="details_messages">
@@ -90,36 +101,30 @@
     <string name="error_name_empty">İsim boş bırakılamaz</string>
     <string name="error_name_min_length">İsim en az 2 karakter olmalı</string>
     <string name="error_name_letters_only">İsim sadece harf içermelidir</string>
-
     <string name="error_surname_empty">Soyisim boş bırakılamaz</string>
     <string name="error_surname_min_length">Soyisim en az 2 karakter olmalı</string>
     <string name="error_surname_letters_only">Soyisim sadece harf içermelidir</string>
-
     <string name="error_email_empty">E-posta boş bırakılamaz</string>
     <string name="error_email_invalid">Geçerli bir e-posta adresi girin</string>
-
     <string name="error_password_empty">Şifre boş bırakılamaz</string>
     <string name="error_password_min_length">Şifre en az 6 karakter olmalı</string>
     <string name="error_password_needs_digit">Şifre en az bir rakam içermelidir</string>
     <string name="error_password_needs_letter">Şifre en az bir harf içermelidir</string>
-
     <string name="error_height_empty">Boy boş bırakılamaz</string>
     <string name="error_height_invalid">Geçerli bir sayı girin</string>
     <string name="error_height_range">Boy 50-300 cm arasında olmalı</string>
-
     <string name="error_weight_empty">Kilo boş bırakılamaz</string>
     <string name="error_weight_invalid">Geçerli bir sayı girin</string>
     <string name="error_weight_range">Kilo 20-500 kg arasında olmalı</string>
-
     <string name="error_age_empty">Yaş boş bırakılamaz</string>
     <string name="error_age_invalid">Geçerli bir sayı girin</string>
     <string name="error_age_range">Yaş 10-120 arasında olmalı</string>
-
     <string name="error_gender_empty">Cinsiyet seçiniz</string>
     <string name="error_goal_empty">Hedef seçiniz</string>
 
     <string name="error_user_id_not_found">Kullanıcı ID\'si alınamadı</string>
     <string name="error_email_already_in_use">Bu e-posta adresi zaten kullanımda</string>
+    <string name="error_sign_in_failed">Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin</string>
     <string name="error_email_invalid_firebase">Geçersiz e-posta adresi</string>
     <string name="error_weak_password">Şifre çok zayıf (en az 6 karakter olmalı)</string>
     <string name="error_network_request_failed">İnternet bağlantısı hatası</string>

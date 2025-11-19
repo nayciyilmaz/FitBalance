@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.fitbalance.R
+import java.util.Locale
 
 @Composable
 fun MealCard(
@@ -37,7 +38,7 @@ fun MealCard(
             .padding(vertical = 8.dp)
             .clickable { onClick() },
         colors = CardDefaults.cardColors(
-            containerColor = colorResource(R.color.green)
+            containerColor = colorResource(R.color.green).copy(alpha = 0.9f)
         )
     ) {
         Column(
@@ -47,7 +48,7 @@ fun MealCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = title,
+                text = title.uppercase(Locale("tr")),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
