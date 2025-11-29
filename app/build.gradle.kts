@@ -84,6 +84,9 @@ dependencies {
     //Date
     implementation("com.google.android.material:material:1.13.0")
     implementation("com.kizitonwose.calendar:compose:2.9.0")
+
+    //WorkManager
+    implementation ("androidx.work:work-runtime-ktx:2.10.1")
 }
 
 kapt {

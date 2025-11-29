@@ -39,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.fitbalance.R
+import com.example.fitbalance.components.EditButtons
 import com.example.fitbalance.components.EditScaffold
 import com.example.fitbalance.components.InfoCard
 import com.example.fitbalance.components.LoadingIndicator
@@ -131,6 +132,28 @@ fun HomeScreen(
                 LoadingIndicator(
                     text = stringResource(R.string.yapayzeka_ögün_plan)
                 )
+            } else if (viewModel.hasError) {
+                Column(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    EditButtons(
+                        text = stringResource(R.string.tekrar_dene),
+                        onClick = { viewModel.generateNewMealPlan() },
+                        modifier = modifier
+                            .fillMaxWidth(),
+                        containerColor = colorResource(R.color.green),
+                        contentColor = Color.White
+                    )
+                    Text(
+                        text = stringResource(R.string.ogün_olusturulamadi),
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Center,
+                    )
+                }
             } else {
                 key(viewModel.refreshTrigger) {
                     HomeScreenMealSection(
@@ -299,7 +322,7 @@ fun HomeScreenDateCard(
                     Text(
                         text = "Bugünün tarihi :",
                         style = MaterialTheme.typography.bodyMedium.copy(
-                           color = Color.White,
+                            color = Color.White,
                             fontWeight = FontWeight.Bold
                         )
                     )

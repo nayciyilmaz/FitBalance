@@ -119,7 +119,7 @@ fun SignInScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
+                    .padding(top = 12.dp)
             ) {
                 EditOutlineTextField(
                     modifier = Modifier.fillMaxWidth(),

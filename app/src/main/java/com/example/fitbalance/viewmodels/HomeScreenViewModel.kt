@@ -41,7 +41,7 @@ class HomeScreenViewModel @Inject constructor(
     var isLoading by mutableStateOf(false)
         private set
 
-    var errorMessage by mutableStateOf<String?>(null)
+    var hasError by mutableStateOf(false)
         private set
 
     var breakfast by mutableStateOf<Meal?>(null)
@@ -91,7 +91,7 @@ class HomeScreenViewModel @Inject constructor(
     fun loadTodayMealPlan() {
         viewModelScope.launch {
             isLoading = true
-            errorMessage = null
+            hasError = false
 
             when (val result = mealRepository.getTodayMealPlan()) {
                 is MealResult.Success -> {
@@ -113,14 +113,15 @@ class HomeScreenViewModel @Inject constructor(
             }
         }
     }
+
     fun generateNewMealPlan() {
         viewModelScope.launch {
             isLoading = true
-            errorMessage = null
+            hasError = false
 
             val userId = firebaseAuth.currentUser?.uid
             if (userId == null) {
-                errorMessage = "Kullanıcı bulunamadı"
+                hasError = true
                 isLoading = false
                 return@launch
             }
@@ -130,7 +131,7 @@ class HomeScreenViewModel @Inject constructor(
                 val userData = userDoc.toObject(UserData::class.java)
 
                 if (userData == null) {
-                    errorMessage = "Kullanıcı verileri bulunamadı"
+                    hasError = true
                     isLoading = false
                     return@launch
                 }
@@ -169,23 +170,24 @@ class HomeScreenViewModel @Inject constructor(
                             is MealResult.Success -> {
                                 currentMealPlanId = saveResult.mealPlan?.id ?: ""
                                 calculateTotalCalories()
+                                hasError = false
                                 isLoading = false
                             }
 
                             is MealResult.Error -> {
-                                errorMessage = saveResult.message
+                                hasError = true
                                 isLoading = false
                             }
                         }
                     }
 
                     is GeminiMealResult.Error -> {
-                        errorMessage = result.message
+                        hasError = true
                         isLoading = false
                     }
                 }
             } catch (e: Exception) {
-                errorMessage = "Bir hata oluştu: ${e.message}"
+                hasError = true
                 isLoading = false
             }
         }
@@ -207,7 +209,6 @@ class HomeScreenViewModel @Inject constructor(
             }
 
             is MealResult.Error -> {
-                errorMessage = result.message
             }
         }
     }

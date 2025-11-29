@@ -40,8 +40,8 @@
     <string name="splash_button">Hadi Başlayalım</string>
     <string name="title_name">FİT BALANCE</string>
     <string name="ögün_plan">Öğün Planı Oluştur</string>
-    <string name="yapayzeka_ögün_plan">Yapay Zeka öğünleri oluşturuyor</string>
-    <string name="yapayzeka_ögünplan">Yapay Zeka öğünü değiştiriyor</string>
+    <string name="yapayzeka_ögün_plan">Yapay Zeka öğünleri oluşturuyor...</string>
+    <string name="yapayzeka_ögünplan">Yapay Zeka öğünü değiştiriyor...</string>
     <string name="date_meal">Bu tarih için öğün planı bulunamadı</string>
     <string name="ögünlerim">ÖĞÜNLERİM</string>
     <string name="tüm_ögün">Bugünün tüm öğünlerini tamamladınız!</string>
@@ -50,6 +50,8 @@
     <string name="already_have_account">Zaten hesabın var mı? Giriş Yap.</string>
     <string name="personal_info">Kişisel Bilgiler</string>
     <string name="physical_info">Fiziksel Özellikler</string>
+    <string name="tekrar_dene">Tekrar Dene</string>
+    <string name="ogün_olusturulamadi">Öğünler oluşturulurken bir hata oldu. Tekrar deneyin.</string>
     <string name="account_info">Hesap Bilgileri</string>
     <string name="change_password">Şifre Değiştir</string>
     <string name="current_password">Mevcut Şifre</string>
@@ -138,4 +140,24 @@
     <string name="error_invalid_credential">E-posta veya şifre hatalı</string>
     <string name="error_signin_failed">Giriş başarısız: %1$s</string>
     <string name="error_unexpected">Beklenmeyen bir hata oluştu: %1$s</string>
+
+    <string name="notification_channel_name">Öğün Hatırlatıcıları</string>
+    <string name="notification_channel_description">Günlük öğün ve su içme hatırlatmaları</string>
+    <string name="notification_breakfast_title">Kahvaltı Zamanı!</string>
+    <string name="notification_breakfast_text">Güne enerjik başlamak için kahvaltını yaptın mı?</string>
+    <string name="notification_lunch_title">Öğle Yemeği Vakti!</string>
+    <string name="notification_lunch_text">Öğle yemeğini yemeyi unutma, vücudun enerjiye ihtiyaç duyuyor!</string>
+    <string name="notification_dinner_title">Akşam Yemeği Saati!</string>
+    <string name="notification_dinner_text">Günün son öğününü yeme zamanı geldi!</string>
+    <string name="notification_water_morning_title">Su İç!</string>
+    <string name="notification_water_morning_text">Kahvaltından sonra bir bardak su içmeyi unutma!</string>
+    <string name="notification_water_afternoon_title">Su İç!</string>
+    <string name="notification_water_afternoon_text">Öğleden sonra vücudunu nemlendirme zamanı!</string>
+    <string name="notification_water_evening_title">Su İç!</string>
+    <string name="notification_water_evening_text">Akşam yemeğinden sonra bir bardak su iç!</string>
+    <string name="bildirim_yok">Henüz bildirim yok</string>
+    <string name="notification_permission_title">Bildirim İzni</string>
+    <string name="notification_permission_message">Öğün ve su içme hatırlatmalarını almak için bildirim izni vermeniz gerekiyor.</string>
+    <string name="notification_permission_grant">İzin Ver</string>
+    <string name="notification_permission_deny">Vazgeç</string>
 </resources>

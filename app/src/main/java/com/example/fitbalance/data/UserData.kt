@@ -128,3 +128,20 @@ data class MealGenerationRequest(
     val goal: String,
     val previousMeals: List<String> = emptyList()
 )
+
+data class NotificationItem(
+    val id: String,
+    val title: String,
+    val message: String,
+    val timestamp: Long,
+    val type: NotificationType
+)
+
+enum class NotificationType {
+    BREAKFAST,
+    LUNCH,
+    DINNER,
+    WATER_MORNING,
+    WATER_AFTERNOON,
+    WATER_EVENING
+}

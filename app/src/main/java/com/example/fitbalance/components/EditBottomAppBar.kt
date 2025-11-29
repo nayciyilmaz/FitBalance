@@ -11,6 +11,8 @@ import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -18,16 +20,26 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.fitbalance.R
 import com.example.fitbalance.data.BottomNavItem
 import com.example.fitbalance.navigation.FitBalanceScreens
+import com.example.fitbalance.notification.NotificationPreferences
+import kotlinx.coroutines.delay
 
 @Composable
 fun EditBottomAppBar(
@@ -37,6 +49,17 @@ fun EditBottomAppBar(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val context = LocalContext.current
+    val notificationPrefs = remember { NotificationPreferences(context) }
+    var unreadCount by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(currentRoute) {
+        while (true) {
+            unreadCount = notificationPrefs.getUnreadCount()
+            delay(1000)
+        }
+    }
 
     val items = listOf(
         BottomNavItem(
@@ -82,16 +105,33 @@ fun EditBottomAppBar(
                     selected = false,
                     onClick = { },
                     icon = {
-                        FloatingActionButton(
-                            onClick = onFabClick,
-                            containerColor = colorResource(id = R.color.green),
-                            contentColor = Color.White
+                        BadgedBox(
+                            badge = {
+                                if (unreadCount > 0) {
+                                    Badge(
+                                        containerColor = Color.Red,
+                                        contentColor = Color.White
+                                    ) {
+                                        Text(
+                                            text = if (unreadCount > 9) "9+" else unreadCount.toString(),
+                                            fontSize = 10.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
+                            }
                         ) {
-                            Icon(
-                                imageVector = Icons.Filled.Notifications,
-                                contentDescription = null,
-                                tint = Color.White
-                            )
+                            FloatingActionButton(
+                                onClick = onFabClick,
+                                containerColor = colorResource(id = R.color.green),
+                                contentColor = Color.White
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Notifications,
+                                    contentDescription = null,
+                                    tint = Color.White
+                                )
+                            }
                         }
                     },
                     label = null,
